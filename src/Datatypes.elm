@@ -11,6 +11,7 @@ type alias Person =
     { name : String
     , imageSrc : String
     , websiteUrl : String
+    , title : String
     }
 
 

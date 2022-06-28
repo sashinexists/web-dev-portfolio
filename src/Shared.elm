@@ -147,23 +147,27 @@ viewSiteTitle =
 viewNavigation : Element msg
 viewNavigation =
     Element.row
-        [ Font.color theme.fontColor, Font.size theme.textSize, spacing 50 ]
-        [ Element.link [] { url = "https://github.com/sashinexists", label = Element.text "Projects" }
-        , Element.link [] { url = "https://twitter.com/sashintweets", label = Element.text "Skills" }
-        , Element.link [] { url = "mailto://myself@sashinexists.com", label = Element.text "Testimonials" }
-        , Element.link []
-            { url = "mailto://myself@sashinexists.com", label = Element.text "Writing" }
+        [ spacing 50 ]
+        [ viewNavLink (Element.text "Past Work") "https://twitter.com/sashintweets"
+        , viewNavLink (Element.text "Testimonials") "https://twitter.com/sashintweets"
+        , viewNavLink (Element.text "Skills") "https://twitter.com/sashintweets"
+        , viewNavLink (Element.text "Writing") "https://twitter.com/sashintweets"
         , viewSocialLinks
         ]
+
+
+viewNavLink : Element msg -> String -> Element msg
+viewNavLink label url =
+    Element.link [ Font.size theme.textSize, Font.color theme.navLinkColor, mouseOver [ Font.color theme.navLinkHoverColor ] ] { url = url, label = label }
 
 
 viewSocialLinks : Element msg
 viewSocialLinks =
     Element.row
-        [ Font.color theme.fontColor, Font.size theme.textSize, spacing 30 ]
-        [ Element.link [] { url = "https://github.com/sashinexists", label = viewIcon github 25 }
-        , Element.link [] { url = "https://twitter.com/sashintweets", label = viewIcon twitter 25 }
-        , Element.link [] { url = "mailto://myself@sashinexists.com", label = viewIcon envelope 25 }
+        [ Font.color theme.fontColor, Font.size theme.textSize, spacing 40, paddingEach { top = 0, left = 20, bottom = 0, right = 0 } ]
+        [ viewNavLink (viewIcon github 25) "https://github.com/sashinexists"
+        , viewNavLink (viewIcon twitter 25) "https://twitter.com/sashintweets"
+        , viewNavLink (viewIcon envelope 25) "mailto://myself@sashinexists.com"
         ]
 
 

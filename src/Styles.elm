@@ -20,7 +20,7 @@ type HeadingLevel
 viewHeading : String -> HeadingLevel -> Element msg
 viewHeading title level =
     Element.row
-        [ width fill, centerX ]
+        [ width fill, centerX, paddingEach { top = 20, bottom = 0, right = 0, left = 0 } ]
         [ case level of
             H1 ->
                 viewH1 title
