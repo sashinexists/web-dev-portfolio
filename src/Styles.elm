@@ -4,6 +4,7 @@ import Element exposing (..)
 import Element.Background as Background
 import Element.Border exposing (color, roundEach, rounded, shadow)
 import Element.Font as Font exposing (center, color, letterSpacing, wordSpacing)
+import FontAwesome exposing (Icon)
 import Html.Attributes exposing (property)
 import Theme exposing (theme)
 
@@ -70,3 +71,8 @@ viewH5 text =
 viewH6 : String -> Element msg
 viewH6 text =
     Element.paragraph [ Font.size 40, Font.light ] [ Element.text text ]
+
+
+viewIcon : Icon hasId -> Int -> Element msg
+viewIcon icon size =
+    Element.column [ height <| px <| size, width <| px <| size ] [ Element.html (FontAwesome.view icon) ]

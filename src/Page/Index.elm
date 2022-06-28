@@ -8,7 +8,7 @@ import Element exposing (..)
 import Element.Background as Background
 import Element.Border exposing (color, roundEach, rounded, shadow)
 import Element.Font as Font exposing (center, color, letterSpacing, wordSpacing)
-import FontAwesome.Solid exposing (spaceShuttle)
+import FontAwesome.Solid exposing (quoteLeft)
 import Head
 import Head.Seo as Seo
 import Html.Attributes exposing (align)
@@ -165,7 +165,10 @@ viewTestimonial testimonial =
                 }
             ]
         , Element.column [ spacing 15, height fill, width fill, centerY, padding 20 ]
-            [ Element.paragraph [ Font.alignLeft, width fill, Font.size 20, Font.light, centerY ] [ Element.text ("“" ++ testimonial.testimonial ++ "”") ]
+            [ Element.column [ spacing 5 ]
+                [ viewIcon quoteLeft 25
+                , Element.paragraph [ Font.alignLeft, width fill, Font.size 20, Font.light, centerY ] [ Element.text testimonial.testimonial ]
+                ]
             , Element.column [ spacing 5 ]
                 [ Element.paragraph
                     [ Font.alignLeft

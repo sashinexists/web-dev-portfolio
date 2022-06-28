@@ -8,13 +8,14 @@ import Element.Border exposing (color, roundEach, rounded, shadow)
 import Element.Font as Font exposing (center, color, letterSpacing, wordSpacing)
 import FontAwesome exposing (Icon, view)
 import FontAwesome.Brands exposing (github, twitter)
-import FontAwesome.Solid exposing (envelope)
+import FontAwesome.Solid exposing (envelope, quoteLeft)
 import Html exposing (Html)
 import Pages.Flags
 import Pages.PageUrl exposing (PageUrl)
 import Path exposing (Path)
 import Route exposing (Route)
 import SharedTemplate exposing (SharedTemplate)
+import Styles exposing (viewIcon)
 import Theme exposing (theme)
 import View exposing (View)
 
@@ -169,8 +170,3 @@ viewSocialLinks =
         , viewNavLink (viewIcon twitter 25) "https://twitter.com/sashintweets"
         , viewNavLink (viewIcon envelope 25) "mailto://myself@sashinexists.com"
         ]
-
-
-viewIcon : Icon hasId -> Int -> Element msg
-viewIcon icon size =
-    Element.column [ height <| px <| size, width <| px <| size ] [ Element.html (FontAwesome.view icon) ]
