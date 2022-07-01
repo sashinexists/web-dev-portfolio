@@ -1,4 +1,4 @@
-module Styles exposing (..)
+module Components exposing (..)
 
 import Element exposing (..)
 import Element.Background as Background
@@ -12,6 +12,7 @@ import Markdown.Block as Block exposing (Block, Inline, ListItem(..), Task(..))
 import Markdown.Html
 import Markdown.Parser
 import Markdown.Renderer
+import Styles exposing (defaultBoxShadow, defaultBoxStyles, defaultParagraphStyles, noBoxShadow)
 import Theme exposing (theme)
 
 
@@ -24,28 +25,28 @@ type HeadingLevel
     | H6
 
 
-viewHeading : String -> HeadingLevel -> Element msg
-viewHeading title level =
+heading : String -> HeadingLevel -> Element msg
+heading title level =
     Element.row
         [ width fill, centerX, paddingEach { top = 20, bottom = 0, right = 0, left = 0 } ]
         [ case level of
             H1 ->
-                viewH1 title
+                h1 title
 
             H2 ->
-                viewH2 title
+                h2 title
 
             H3 ->
-                viewH3 title
+                h3 title
 
             H4 ->
-                viewH4 title
+                h4 title
 
             H5 ->
-                viewH5 title
+                h5 title
 
             H6 ->
-                viewH6 title
+                h6 title
         ]
 
 
@@ -55,39 +56,39 @@ viewHeading title level =
 -- you might be able to replace these with the code that you copied
 
 
-viewH1 : String -> Element msg
-viewH1 text =
+h1 : String -> Element msg
+h1 text =
     Element.paragraph [ Font.size 40, Font.extraLight, width fill, Font.alignLeft ] [ Element.text text ]
 
 
-viewH2 : String -> Element msg
-viewH2 text =
+h2 : String -> Element msg
+h2 text =
     Element.paragraph [ Font.size 35, Font.extraLight, width fill, Font.alignLeft ] [ Element.text text ]
 
 
-viewH3 : String -> Element msg
-viewH3 text =
+h3 : String -> Element msg
+h3 text =
     Element.paragraph [ Font.size 20, Font.light ] [ Element.text text ]
 
 
-viewH4 : String -> Element msg
-viewH4 text =
+h4 : String -> Element msg
+h4 text =
     Element.paragraph [ Font.size 18, Font.light ] [ Element.text text ]
 
 
-viewH5 : String -> Element msg
-viewH5 text =
+h5 : String -> Element msg
+h5 text =
     Element.paragraph [ Font.size 40, Font.light ] [ Element.text text ]
 
 
-viewH6 : String -> Element msg
-viewH6 text =
+h6 : String -> Element msg
+h6 text =
     Element.paragraph [ Font.size 40, Font.light ] [ Element.text text ]
 
 
-viewIcon : Icon hasId -> Int -> Element msg
-viewIcon icon size =
-    Element.column [ height <| px <| size, width <| px <| size ] [ Element.html (FontAwesome.view icon) ]
+icon : Icon hasId -> Int -> Element msg
+icon faIcon size =
+    Element.column [ height <| px <| size, width <| px <| size ] [ Element.html (FontAwesome.view faIcon) ]
 
 
 paragraph : List (Element msg) -> Element msg
@@ -237,39 +238,3 @@ caption children =
 thematicBreak : Element msg
 thematicBreak =
     Element.el [ Element.centerX, Font.center, Font.extraLight, Font.size 50 ] (Element.text "~")
-
-
-defaultCommentStyles : List (Attr () msg)
-defaultCommentStyles =
-    [ Element.transparent True, height <| px <| 0, Background.color theme.bgColor ]
-
-
-defaultParagraphStyles : List (Attr () msg)
-defaultParagraphStyles =
-    [ spacing 10 ]
-
-
-defaultBoxShadow : { color : Color, offset : ( number, number ), blur : number, size : Float }
-defaultBoxShadow =
-    { color = theme.contentBgColorDarker, offset = ( 1, 5 ), blur = 8, size = 0.001 }
-
-
-focusBoxShadow : { color : Color, offset : ( number, number ), blur : number, size : Int }
-focusBoxShadow =
-    { color = theme.contentBgColorDarker, offset = ( 1, 5 ), blur = 8, size = 1 }
-
-
-noBoxShadow : { color : Color, offset : ( number, number ), blur : number, size : number }
-noBoxShadow =
-    { color = theme.contentBgColor, offset = ( 0, 0 ), blur = 0, size = 0 }
-
-
-defaultBoxStyles : List (Attr () msg)
-defaultBoxStyles =
-    [ Background.color theme.contentBgColorLighter
-    , padding 30
-    , centerX
-    , centerY
-    , rounded 10
-    , shadow defaultBoxShadow
-    ]

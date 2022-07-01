@@ -2,7 +2,9 @@ module Page.Index exposing (Data, Model, Msg, page)
 
 --import Browser.Dom exposing (Element)
 
+import Components exposing (h2, icon)
 import DataSource exposing (DataSource)
+import DataSource.File
 import Datatypes exposing (Project, Testimonial)
 import Element exposing (..)
 import Element.Background as Background
@@ -12,6 +14,8 @@ import FontAwesome.Solid exposing (quoteLeft)
 import Head
 import Head.Seo as Seo
 import Html.Attributes exposing (align)
+import MarkdownRendering exposing (markdownView)
+import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
@@ -44,9 +48,9 @@ page =
         |> Page.buildNoState { view = view }
 
 
-data : DataSource Data
+data : DataSource String
 data =
-    DataSource.succeed ()
+    DataSource.File.bodyWithoutFrontmatter "data/about.md"
 
 
 head :
@@ -70,7 +74,7 @@ head static =
 
 
 type alias Data =
-    ()
+    String
 
 
 view :
@@ -80,28 +84,43 @@ view :
     -> View Msg
 view maybeUrl sharedModel static =
     { title = "Joy-Driven Development"
-    , body = [ viewPage ]
+    , body = [ viewPage static.data ]
     }
 
 
-viewPage : Element msg
-viewPage =
+viewPage : Data -> Element msg
+viewPage content =
     Element.column [ centerX, centerY, width fill ]
         [ viewBanner
-        , viewContent
+        , viewContent content
         , viewFooter
         ]
 
 
-viewContent : Element msg
-viewContent =
+viewContent : Data -> Element msg
+viewContent content =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
-        [ viewHeading "Testimonials" H2
+        [ viewIntro content
+        , h2 "Testimonials"
         , viewTestimonials
-        , viewHeading "Past Work" H2
+        , h2 "Past Work"
         , viewProjects
-        , viewHeading "Skills" H2
+        , h2 "Skills"
         ]
+
+
+viewIntro : Data -> Element msg
+viewIntro content =
+    case markdownView content of
+        Ok rendered ->
+            Element.column [ width fill, spacing 20, padding 20 ]
+                (List.map
+                    (\p -> Element.paragraph ([ Font.justify, width fill, Font.size 16, Font.light ] ++ defaultParagraphStyles) [ p ])
+                    rendered
+                )
+
+        Err _ ->
+            Element.text "This should be pulling text from the file \"data/about.md\", but it's not working."
 
 
 viewBanner : Element msg
@@ -166,7 +185,7 @@ viewTestimonial testimonial =
             ]
         , Element.column [ spacing 15, height fill, width fill, centerY, padding 20 ]
             [ Element.column [ spacing 5 ]
-                [ viewIcon quoteLeft 25
+                [ icon quoteLeft 25
                 , Element.paragraph [ Font.alignLeft, width fill, Font.size 20, Font.light, centerY ] [ Element.text testimonial.testimonial ]
                 ]
             , Element.column [ spacing 5 ]

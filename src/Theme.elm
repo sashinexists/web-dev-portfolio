@@ -25,6 +25,7 @@ theme =
     , navLinkColor = colorPalette.darkMediumGray
     , navLinkHoverColor = colorPalette.platinum
     , fontLinkColor = colorPalette.middleGreen
+    , fontLinkHoverColor = colorPalette.turquoiseGreen
     , siteTitleColor = colorPalette.middleGreen
     , bgColor = colorPalette.richBlack
     , contentBgColor = colorPalette.eerieBlack

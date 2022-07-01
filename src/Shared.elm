@@ -1,21 +1,25 @@
 module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
 
+import Browser.Dom exposing (setViewport)
 import Browser.Navigation
+import Components exposing (icon)
 import DataSource
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border exposing (color, roundEach, rounded, shadow)
 import Element.Font as Font exposing (center, color, letterSpacing, wordSpacing)
+import Element.Input exposing (button)
 import FontAwesome exposing (Icon, view)
 import FontAwesome.Brands exposing (github, twitter)
-import FontAwesome.Solid exposing (envelope, quoteLeft)
+import FontAwesome.Solid exposing (chevronCircleUp, envelope)
 import Html exposing (Html)
+import Html.Events exposing (onClick)
 import Pages.Flags
 import Pages.PageUrl exposing (PageUrl)
 import Path exposing (Path)
 import Route exposing (Route)
 import SharedTemplate exposing (SharedTemplate)
-import Styles exposing (viewIcon)
+import Task
 import Theme exposing (theme)
 import View exposing (View)
 
@@ -38,6 +42,8 @@ type Msg
         , fragment : Maybe String
         }
     | SharedMsg SharedMsg
+    | ScrollToTop
+    | Ignored
 
 
 type alias Data =
@@ -82,6 +88,16 @@ update msg model =
         SharedMsg globalMsg ->
             ( model, Cmd.none )
 
+        ScrollToTop ->
+            ( model
+            , Cmd.none
+              --, setViewport 0 0
+              --  |> Task.attempt (always Ignored)
+            )
+
+        Ignored ->
+            ( model, Cmd.none )
+
 
 subscriptions : Path -> Model -> Sub Msg
 subscriptions _ _ =
@@ -121,7 +137,17 @@ defaultStyles =
     , Font.justify
     , Background.color theme.bgColor
     , paddingEach { top = 20, bottom = 20, right = 0, left = 0 }
+    , Element.el [ padding 10, alignBottom, alignLeft, alpha 0.5 ] viewBackToTop |> Element.inFront
     ]
+
+
+viewBackToTop : Element msg
+viewBackToTop =
+    button [] { onPress = Nothing, label = Components.icon chevronCircleUp 30 }
+
+
+
+--Components.icon chevronCircleUp 30
 
 
 viewDefault : List (Element msg) -> Element msg
@@ -166,7 +192,7 @@ viewSocialLinks : Element msg
 viewSocialLinks =
     Element.row
         [ Font.color theme.fontColor, Font.size theme.textSize, spacing 40, paddingEach { top = 0, left = 20, bottom = 0, right = 0 } ]
-        [ viewNavLink (viewIcon github 25) "https://github.com/sashinexists"
-        , viewNavLink (viewIcon twitter 25) "https://twitter.com/sashintweets"
-        , viewNavLink (viewIcon envelope 25) "mailto://myself@sashinexists.com"
+        [ viewNavLink (icon github 25) "https://github.com/sashinexists"
+        , viewNavLink (icon twitter 25) "https://twitter.com/sashintweets"
+        , viewNavLink (icon envelope 25) "mailto://myself@sashinexists.com"
         ]

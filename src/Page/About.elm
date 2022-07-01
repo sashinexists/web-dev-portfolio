@@ -1,4 +1,4 @@
-module Page.About exposing (Model, Msg, Data, page)
+module Page.About exposing (Data, Model, Msg, page)
 
 import DataSource exposing (DataSource)
 import Head
@@ -17,8 +17,10 @@ type alias Model =
 type alias Msg =
     Never
 
+
 type alias RouteParams =
     {}
+
 
 page : Page RouteParams Data
 page =
