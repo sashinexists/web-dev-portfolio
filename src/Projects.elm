@@ -6,7 +6,7 @@ import Datatypes exposing (Project)
 projects : List Project
 projects =
     [ { name = "Expanding Awareness"
-      , description = "A project to expand awareness"
+      , description = "A website that explores Alexander Technique and all the things it intersects with."
       , imageSrc = "assets/images/projects/expanding-awareness.png"
       , websiteUrl = "https://expandingawarness.org"
       , testimonial = []

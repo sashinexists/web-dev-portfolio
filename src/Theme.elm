@@ -6,6 +6,8 @@ import Element exposing (rgb255, rgba255)
 colorPalette =
     { richBlack = rgb255 3 3 3 --$rich-black: #030303; // for body background colour
     , eerieBlack = rgb255 23 23 23 --$eerie-black: #171717; // for article background colour
+    , eerieBlackLightest = rgb255 45 45 45
+    , eerieBlackLightestTransparent = rgba255 45 45 45 0.9
     , eerieBlackLighter = rgb255 36 36 36
     , eerieBlackLighterTransparent = rgba255 36 36 36 0.9 -- $eerie-black but lighter for inline elements
     , eerieBlackDarker = rgb255 18 18 18 -- $eerie-black but darker
@@ -33,6 +35,8 @@ theme =
     , contentBgColorDarkerTransparent = colorPalette.eerieBlackDarkerTransparent
     , contentBgColorLighter = colorPalette.eerieBlackLighter
     , contentBgColorLighterTransparent = colorPalette.eerieBlackLighterTransparent
+    , componentHoverColor = colorPalette.eerieBlackLightest
+    , componentHoverColorTransparent = colorPalette.eerieBlackLightestTransparent
     , textSize = 12
     , titleTextSize = 36
     }

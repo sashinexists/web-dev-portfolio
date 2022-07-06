@@ -1,3 +1,3 @@
-There are too many interesting projects out there with uninspiring websites.
+My name is Sashin, and I help ambitious and creative individuals and organisations design and build their dream websites.
 
-My name is Sashin and I work with creators and innovators to build beautiful websites that reflect who they are and what their brand stands for. (This doesn't sound quite right yet...)
+I work directly with clients to bring their vision to life, getting to know them, their mission and brand, and create websites that reflect them.

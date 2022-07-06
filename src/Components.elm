@@ -28,7 +28,7 @@ type HeadingLevel
 heading : String -> HeadingLevel -> Element msg
 heading title level =
     Element.row
-        [ width fill, centerX, paddingEach { top = 20, bottom = 0, right = 0, left = 0 } ]
+        [ width fill, centerX, paddingEach { top = 25, bottom = 0, right = 0, left = 0 } ]
         [ case level of
             H1 ->
                 h1 title
@@ -63,7 +63,7 @@ h1 text =
 
 h2 : String -> Element msg
 h2 text =
-    Element.paragraph [ Font.size 35, Font.extraLight, width fill, Font.alignLeft ] [ Element.text text ]
+    Element.paragraph [ Font.size 35, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
 
 h3 : String -> Element msg
