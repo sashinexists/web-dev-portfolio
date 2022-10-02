@@ -1,31 +1,54 @@
-module Datatypes exposing (Person, Project, Skill, Testimonial)
+module Datatypes exposing (Person, Photo, Project, Skill, SkillThumbnail(..), Testimonial)
+
+import FontAwesome exposing (Icon, WithoutId)
 
 
 type alias Testimonial =
-    { person : Person
-    , testimonial : String
+    { id : String
+    , author : Person
+    , text : String
     }
 
 
 type alias Person =
-    { name : String
-    , imageSrc : String
-    , websiteUrl : String
+    { id : String
+    , name : String
+    , photo : Photo
+    , website : String
     , title : String
+    , organisation : String
+    }
+
+
+type alias Photo =
+    { id : String
+    , url : String
     }
 
 
 type alias Project =
-    { name : String
-    , description : String
-    , imageSrc : String
+    { title : String
+    , slug : String
+    , screenshotUrl : String
+    , gitHubUrl : String
     , websiteUrl : String
-    , testimonial : List Testimonial
+    , description : String
+    , about : String
+    , testimonial : Maybe Testimonial
+    , skills : List Skill
     }
 
 
 type alias Skill =
-    { name : String
+    { id : String
+    , name : String
     , description : String
     , website : String
+    , thumbnail : String
+    , about : String
     }
+
+
+type SkillThumbnail
+    = Img String
+    | FA (Icon WithoutId)

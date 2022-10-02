@@ -5,12 +5,13 @@ module Page.Index exposing (Data, Model, Msg, page)
 import Components exposing (h2, icon)
 import DataSource exposing (DataSource)
 import DataSource.File
-import Datatypes exposing (Project, Testimonial)
+import Datatypes exposing (Project, Skill, Testimonial)
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border exposing (color, roundEach, rounded, shadow)
 import Element.Font as Font exposing (center, color, letterSpacing, wordSpacing)
 import Element.Input exposing (button)
+import FontAwesome.Brands exposing (github)
 import FontAwesome.Solid exposing (quoteLeft)
 import Head
 import Head.Seo as Seo
@@ -23,6 +24,7 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Projects exposing (projects)
 import Shared exposing (Msg)
+import Skills exposing (skills, viewSkillIcon)
 import Styles exposing (..)
 import Testimonials exposing (testimonials)
 import Theme exposing (theme)
@@ -50,9 +52,14 @@ page =
         |> Page.buildNoState { view = view }
 
 
-data : DataSource String
+data : DataSource Data
 data =
-    DataSource.File.bodyWithoutFrontmatter "data/about.md"
+    DataSource.map4
+        (\about skills testimonials projects -> { about = about, skills = skills, testimonials = testimonials, projects = projects })
+        (DataSource.File.bodyWithoutFrontmatter "data/about.md")
+        skills
+        testimonials
+        projects
 
 
 head :
@@ -76,7 +83,11 @@ head static =
 
 
 type alias Data =
-    String
+    { about : String
+    , skills : List Skill
+    , testimonials : List Testimonial
+    , projects : List Project
+    }
 
 
 view :
@@ -85,7 +96,7 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view maybeUrl sharedModel static =
-    { title = "Joy-Driven Development"
+    { title = "Rust/Elm Developer, at your service"
     , body = [ viewPage static.data ]
     }
 
@@ -102,18 +113,18 @@ viewPage content =
 viewContent : Data -> Element msg
 viewContent content =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
-        [ viewIntro content
-        , viewStack
+        [ viewIntro content.about
+        , viewStack content.skills
         , h2 "Testimonials"
-        , viewTestimonials
+        , viewTestimonials content.testimonials
         , h2 "Past Work"
-        , viewProjects
+        , viewProjects content.projects
 
         --, h2 "Skills"
         ]
 
 
-viewIntro : Data -> Element msg
+viewIntro : String -> Element msg
 viewIntro content =
     case markdownView content of
         Ok rendered ->
@@ -127,8 +138,8 @@ viewIntro content =
             Element.text "This should be pulling text from the file \"data/about.md\", but it's not working."
 
 
-viewStack : Element msg
-viewStack =
+viewStack : List Skill -> Element msg
+viewStack skills =
     Element.row
         [ width fill
         , spacing 15
@@ -137,28 +148,10 @@ viewStack =
         , centerX
         , centerY
         ]
-        [ viewStackIcon "ghost"
-        , viewStackIcon "elm"
-        , viewStackIcon "rust"
-        , viewStackIcon "obsidian"
-        , viewStackIcon "html"
-        , viewStackIcon "css3"
-        , viewStackIcon "sass"
-        , viewStackIcon "postgresql"
-        , viewStackIcon "sqlite"
-        , viewStackIcon "git"
-        , viewStackIcon "github"
-        ]
-
-
-viewStackIcon : String -> Element msg
-viewStackIcon name =
-    button [ height fill, width <| px <| 50, centerX, centerY, mouseOver [ Background.color theme.componentHoverColor ], paddingEach { top = 10, bottom = 10, left = 0, right = 0 } ]
-        { onPress = Nothing
-        , label =
-            Element.image [ centerX, centerY, height <| px <| 40, width <| px <| 40 ]
-                { description = name, src = "assets/images/skills/" ++ name ++ ".svg" }
-        }
+        (List.map
+            viewSkillIcon
+            skills
+        )
 
 
 viewBanner : Element msg
@@ -203,8 +196,8 @@ viewBannerContent =
         ]
 
 
-viewTestimonials : Element msg
-viewTestimonials =
+viewTestimonials : List Testimonial -> Element msg
+viewTestimonials testimonials =
     Element.column [ width fill, centerX, spacing 70 ]
         (List.map
             (\p -> viewTestimonial p)
@@ -225,14 +218,14 @@ viewTestimonial testimonial =
             Element.row []
                 [ Element.column []
                     [ Element.image [ width <| px <| 120, height <| px <| 120, centerX, centerY, rounded 200, clip ]
-                        { src = testimonial.person.imageSrc
-                        , description = testimonial.testimonial
+                        { src = testimonial.author.photo.url
+                        , description = testimonial.text
                         }
                     ]
                 , Element.column [ spacing 15, height fill, width fill, centerY, padding 20 ]
                     [ Element.column [ spacing 5 ]
                         [ icon quoteLeft 25
-                        , Element.paragraph [ Font.alignLeft, width fill, Font.size 20, Font.light, centerY ] [ Element.text testimonial.testimonial ]
+                        , Element.paragraph [ Font.alignLeft, width fill, Font.size 20, Font.light, centerY ] [ Element.text testimonial.text ]
                         ]
                     , Element.column [ spacing 5 ]
                         [ Element.paragraph
@@ -242,7 +235,7 @@ viewTestimonial testimonial =
                             , Font.size 15
                             , Font.regular
                             ]
-                            [ Element.text testimonial.person.name ]
+                            [ Element.text testimonial.author.name ]
                         , Element.paragraph
                             [ Font.alignLeft
                             , width fill
@@ -250,15 +243,15 @@ viewTestimonial testimonial =
                             , Font.size 11
                             , Font.regular
                             ]
-                            [ Element.text testimonial.person.title ]
+                            [ Element.text testimonial.author.title, Element.text ", ", Element.text testimonial.author.organisation ]
                         ]
                     ]
                 ]
         }
 
 
-viewProjects : Element msg
-viewProjects =
+viewProjects : List Project -> Element msg
+viewProjects projects =
     Element.column [ width fill, centerX, spacing 60 ]
         (List.map
             (\p -> viewProject p)
@@ -275,6 +268,16 @@ viewProject project =
         , Background.color theme.contentBgColorLighter
         , rounded 10
         , mouseOver [ Font.color theme.navLinkHoverColor, Background.color theme.componentHoverColor ]
+        , Element.inFront
+            (Element.el
+                [ height fill
+                , width fill
+                , Background.color theme.contentBgColor
+                , alpha 0.2
+                , mouseOver [ alpha 0 ]
+                ]
+                (Element.text "")
+            )
         ]
         { onPress = Nothing
         , label =
@@ -301,7 +304,7 @@ viewProjectTitle project =
             , Font.center
             , width fill
             ]
-            [ Element.text project.name ]
+            [ Element.text project.title ]
         ]
 
 
@@ -316,7 +319,7 @@ viewProjectImage project =
             , roundEach { topLeft = 10, topRight = 10, bottomLeft = 10, bottomRight = 10 }
             , clip
             ]
-            { src = project.imageSrc
+            { src = project.screenshotUrl
             , description = project.description
             }
         ]
