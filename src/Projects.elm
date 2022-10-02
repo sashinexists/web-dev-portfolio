@@ -33,7 +33,7 @@ type alias Screenshot =
 
 projects : DataSource (List Project)
 projects =
-    DataSource.Http.get (Secrets.succeed "https://cdn.contentful.com/spaces/gh3negosphjh/environments/master/entries?content_type=pastProject&access_token=TY_E9VvxnyO2jK19-khEq6VbH_eqaDepbu4TzXGUNZU&order=sys.updatedAt&include=4") decodeProjects
+    DataSource.Http.get (Secrets.succeed "https://cdn.contentful.com/spaces/gh3negosphjh/environments/master/entries?content_type=pastProject&access_token=TY_E9VvxnyO2jK19-khEq6VbH_eqaDepbu4TzXGUNZU&order=-sys.createdAt&include=4") decodeProjects
 
 
 decodeProjects : Decoder (List Project)
