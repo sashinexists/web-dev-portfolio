@@ -62,7 +62,7 @@ getSpecificThumbnailUrl thumbnails id =
                 { id = "null", url = "empty" }
                 (List.head
                     (List.filter
-                        (\thumbnail -> Debug.log "thumbnail.id" thumbnail.id == Debug.log "id" id)
+                        (\thumbnail -> thumbnail.id == id)
                         thumbnails
                     )
                 )

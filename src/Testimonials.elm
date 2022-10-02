@@ -73,7 +73,7 @@ getSpecificPerson personList id =
         { id = "null", name = "null", organisation = "null", title = "null", website = "null", photo = { id = "null", url = "null" } }
         (List.head
             (List.filter
-                (\p -> Debug.log "person.id" p.id == Debug.log "id" id)
+                (\p -> p.id == id)
                 personList
             )
         )
@@ -92,7 +92,7 @@ getSpecificPhoto photos id =
         { id = "null", url = "empty" }
         (List.head
             (List.filter
-                (\p -> Debug.log "photo.id" p.id == Debug.log "id" id)
+                (\p -> p.id == id)
                 photos
             )
         )
