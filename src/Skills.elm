@@ -12,6 +12,7 @@ import Theme exposing (theme)
 
 type alias SkillWithoutThumbnail =
     { id : String
+    , slug : String
     , name : String
     , description : String
     , website : String
@@ -50,7 +51,7 @@ decodeProjectSkills =
 alignSkills : List SkillWithoutThumbnail -> List Thumbnail -> List Skill
 alignSkills skillList thumbnails =
     List.map
-        (\skill -> { id = skill.id, name = skill.name, description = skill.description, website = skill.website, about = skill.about, thumbnail = getSpecificThumbnailUrl thumbnails skill.thumbnail })
+        (\skill -> { id = skill.id, slug = skill.slug, name = skill.name, description = skill.description, website = skill.website, about = skill.about, thumbnail = getSpecificThumbnailUrl thumbnails skill.thumbnail })
         skillList
 
 
@@ -72,8 +73,9 @@ getSpecificThumbnailUrl thumbnails id =
 
 decodeSkillWithoutThumbnail : Decoder SkillWithoutThumbnail
 decodeSkillWithoutThumbnail =
-    Decode.map6 SkillWithoutThumbnail
+    Decode.map7 SkillWithoutThumbnail
         (Decode.field "sys" (Decode.field "id" Decode.string))
+        (Decode.field "fields" (Decode.field "slug" Decode.string))
         (Decode.field "fields" (Decode.field "name" Decode.string))
         (Decode.field "fields" (Decode.field "description" Decode.string))
         (Decode.field "fields" (Decode.field "website" Decode.string))
@@ -91,7 +93,7 @@ decodeThumbnail =
 viewSkillIcon : Skill -> Element msg
 viewSkillIcon skill =
     link [ height fill, width <| px <| 50, centerX, centerY, mouseOver [ Background.color theme.componentHoverColor ], paddingEach { top = 10, bottom = 10, left = 0, right = 0 } ]
-        { url = skill.website
+        { url = "/skill/" ++ skill.slug
         , label =
             Element.image
                 [ centerX, centerY, height <| px <| 40, width <| px <| 40 ]

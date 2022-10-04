@@ -168,17 +168,17 @@ viewHeader =
 
 viewSiteTitle : Element msg
 viewSiteTitle =
-    Element.column [ Font.color theme.siteTitleColor, Font.size theme.titleTextSize, Font.light ] [ Element.text "Sashin Dev" ]
+    Element.column [ Font.color theme.siteTitleColor, Font.size theme.titleTextSize, Font.light ] [ Element.link [] { url = "/", label = Element.text "Sashin Dev" } ]
 
 
 viewNavigation : Element msg
 viewNavigation =
     Element.row
         [ spacing 50 ]
-        [ viewNavLink (Element.text "Past Work") "https://twitter.com/sashintweets"
-        , viewNavLink (Element.text "Testimonials") "https://twitter.com/sashintweets"
-        , viewNavLink (Element.text "Skills") "https://twitter.com/sashintweets"
-        , viewNavLink (Element.text "Writing") "https://twitter.com/sashintweets"
+        [ viewNavLink (Element.text "Past Work") "/projects"
+        , viewNavLink (Element.text "Testimonials") "/testimonials"
+        , viewNavLink (Element.text "Skills") "/skills"
+        , viewNavLink (Element.text "Writing") "https://sashinexists.com"
         , viewSocialLinks
         ]
 

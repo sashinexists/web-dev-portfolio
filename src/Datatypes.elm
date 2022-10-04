@@ -5,6 +5,7 @@ import FontAwesome exposing (Icon, WithoutId)
 
 type alias Testimonial =
     { id : String
+    , slug : String
     , author : Person
     , text : String
     }
@@ -41,6 +42,7 @@ type alias Project =
 
 type alias Skill =
     { id : String
+    , slug : String
     , name : String
     , description : String
     , website : String

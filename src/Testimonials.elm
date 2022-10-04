@@ -10,6 +10,7 @@ import Pages.Secrets as Secrets
 
 type alias TestimonialWithoutPerson =
     { id : String
+    , slug : String
     , text : String
     , personId : String
     }
@@ -50,8 +51,9 @@ decodeProjectTestimonials =
 
 decodeTestimonialWithoutPerson : Decoder TestimonialWithoutPerson
 decodeTestimonialWithoutPerson =
-    Decode.map3 TestimonialWithoutPerson
+    Decode.map4 TestimonialWithoutPerson
         (Decode.field "sys" (Decode.field "id" Decode.string))
+        (Decode.field "fields" (Decode.field "slug" Decode.string))
         (Decode.field "fields" (Decode.field "text" Decode.string))
         (Decode.field "fields" (Decode.field "author" (Decode.field "sys" (Decode.field "id" Decode.string))))
 
@@ -63,7 +65,7 @@ alignTestimonials testimonialList personList photos =
             alignPeople personList photos
     in
     List.map
-        (\testimonial -> { id = testimonial.id, text = testimonial.text, author = getSpecificPerson people testimonial.personId })
+        (\testimonial -> { id = testimonial.id, slug = testimonial.slug, text = testimonial.text, author = getSpecificPerson people testimonial.personId })
         testimonialList
 
 
