@@ -132,7 +132,7 @@ defaultStyles =
     , Font.family
         [ Font.external
             { name = "Ubuntu"
-            , url = "https://fonts.googleapis.com/css2?family=Ubuntu:wght@200;300;400&display=swap"
+            , url = "https://fonts.googleapis.com/css2?family=Ubuntu:wght@100;300;400&display=swap"
             }
         ]
     , Font.color theme.fontColor

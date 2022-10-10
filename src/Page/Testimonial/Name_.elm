@@ -6,7 +6,7 @@ import DataSource exposing (DataSource)
 import Datatypes exposing (Testimonial)
 import Element exposing (..)
 import Element.Background as Background
-import Element.Border exposing (roundEach)
+import Element.Border exposing (roundEach, rounded)
 import Head
 import Head.Seo as Seo
 import Page exposing (Page, PageWithState, StaticPayload)
@@ -93,15 +93,14 @@ view maybeUrl sharedModel static =
 viewPage : Data -> Element msg
 viewPage content =
     Element.column [ centerX, centerY, width fill ]
-        [ viewBanner
-        , viewContent content
+        [ viewContent content
         , viewFooter
         ]
 
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
+    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
         [ h2 "Testimonial"
         , viewTestimonials content
         ]

@@ -1,12 +1,12 @@
 module Page.Skill.Name_ exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewStack)
-import Components exposing (h2)
+import Components exposing (h2, h3)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Skill)
 import Element exposing (..)
 import Element.Background as Background
-import Element.Border exposing (roundEach)
+import Element.Border exposing (roundEach, rounded)
 import Head
 import Head.Seo as Seo
 import Page exposing (Page, PageWithState, StaticPayload)
@@ -101,8 +101,7 @@ view maybeUrl sharedModel static =
 viewPage : Data -> Element msg
 viewPage content =
     Element.column [ centerX, centerY, width fill ]
-        [ viewBanner
-        , viewContent content
+        [ viewContent content
         , viewFooter
         ]
 
@@ -110,6 +109,20 @@ viewPage content =
 viewContent : Data -> Element msg
 viewContent content =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
-        [ h2 "Skill"
-        , viewStack content
+        [ case List.head content of
+            Just skill ->
+                viewSkillPage skill
+
+            Nothing ->
+                Element.text ""
+        ]
+
+
+viewSkillPage : Skill -> Element msg
+viewSkillPage skill =
+    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
+        [ h2 skill.name
+        , h3 skill.description
+        , Element.link [] { url = skill.website, label = Element.text "Go to website" }
+        , Element.paragraph [] [ Element.text skill.about ]
         ]
