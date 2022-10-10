@@ -1,6 +1,6 @@
 module Page.Projects exposing (Data, Model, Msg, page)
 
-import Common exposing (viewBanner, viewFooter, viewProjects)
+import Common exposing (viewBanner, viewFooter, viewProjects, viewTestimonials)
 import Components exposing (h2)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Project)

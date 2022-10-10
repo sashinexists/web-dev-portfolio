@@ -130,7 +130,11 @@ defaultStyles =
     [ Background.color theme.bgColor
     , Font.color theme.fontColor
     , Font.family
-        [ Font.typeface "Ubuntu" ]
+        [ Font.external
+            { name = "Ubuntu"
+            , url = "https://fonts.googleapis.com/css2?family=Ubuntu:wght@200;300;400&display=swap"
+            }
+        ]
     , Font.color theme.fontColor
     , Font.size theme.textSize
     , Font.regular

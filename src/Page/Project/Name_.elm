@@ -1,7 +1,7 @@
 module Page.Project.Name_ exposing (Data, Model, Msg, page)
 
-import Common exposing (viewBanner, viewFooter, viewProjects)
-import Components exposing (h2)
+import Common exposing (viewBanner, viewFooter, viewProjects, viewStack, viewTestimonial, viewTestimonials)
+import Components exposing (h2, h3)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Project)
 import Element exposing (..)
@@ -105,6 +105,35 @@ viewPage content =
 viewContent : Data -> Element msg
 viewContent content =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
-        [ h2 "Past Project"
-        , viewProjects content
+        [ case List.head content of
+            Just project ->
+                viewProjectPage project
+
+            Nothing ->
+                Element.text "Something went wrong here."
+        ]
+
+
+viewProjectPage : Project -> Element msg
+viewProjectPage project =
+    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
+        [ h2 project.title
+        , Element.paragraph [] [ Element.text project.description ]
+        , Element.row []
+            [ Element.link [] { url = project.websiteUrl, label = Element.paragraph [] [ Element.text "View Project" ] }
+            , Element.link [] { url = project.gitHubUrl, label = Element.paragraph [] [ Element.text "View on GitHub" ] }
+            ]
+        , Element.text project.screenshotUrl
+        , h3 "Skills used"
+        , viewStack project.skills
+        , case project.testimonial of
+            Just testimonial ->
+                Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
+                    [ h3 "From the Client"
+                    , viewTestimonial testimonial
+                    ]
+
+            Nothing ->
+                Element.text ""
+        , Element.text project.about
         ]
