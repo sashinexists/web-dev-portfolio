@@ -37,6 +37,6 @@ theme =
     , contentBgColorLighterTransparent = colorPalette.eerieBlackLighterTransparent
     , componentHoverColor = colorPalette.eerieBlackLightest
     , componentHoverColorTransparent = colorPalette.eerieBlackLightestTransparent
-    , textSize = 12
+    , textSize = 14
     , titleTextSize = 36
     }

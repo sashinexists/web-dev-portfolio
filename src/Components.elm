@@ -66,9 +66,25 @@ h2 text =
     Element.paragraph [ Font.size 35, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
 
+pageHeading : String -> Element msg
+pageHeading text =
+    Element.paragraph [ Font.size 35, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 0, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+
+
 h3 : String -> Element msg
 h3 text =
     Element.paragraph [ Font.size 20, Font.light ] [ Element.text text ]
+
+
+pageSubheading : String -> Element msg
+pageSubheading text =
+    Element.paragraph
+        [ Font.size 18
+        , Font.light
+        , alignLeft
+        , Font.alignLeft
+        ]
+        [ Element.text text ]
 
 
 h4 : String -> Element msg
