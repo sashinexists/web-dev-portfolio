@@ -163,7 +163,7 @@ viewProjectImage project =
 
 viewProjectButton : String -> String -> Element msg -> Element msg
 viewProjectButton title url icon =
-    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, h3 title ] }
+    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, h3 title ] }
 
 
 viewProjectDetails : String -> Element msg
