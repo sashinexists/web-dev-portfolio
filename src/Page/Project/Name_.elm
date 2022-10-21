@@ -53,6 +53,8 @@ routes =
         , { name = "learn-kanji-sounds" }
         , { name = "conversation-culture" }
         , { name = "sashinexists" }
+        , { name = "better-twitter-archiver" }
+        , { name = "material-shell" }
         ]
 
 
@@ -130,12 +132,12 @@ viewProjectPage project =
             , viewProjectButton "View Project Online" project.websiteUrl (icon globe 25)
             ]
         , viewProjectDetails project.about
-        , h3 "Skills used"
+        , h3 "Skills"
         , viewStack project.skills
         , case project.testimonial of
             Just testimonial ->
                 Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
-                    [ h3 "From the Client"
+                    [ h3 "Testimonial"
                     , viewTestimonial testimonial
                     ]
 

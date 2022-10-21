@@ -253,4 +253,7 @@ caption children =
 
 thematicBreak : Element msg
 thematicBreak =
-    Element.el [ Element.centerX, Font.center, Font.extraLight, Font.size 50 ] (Element.text "~")
+    Element.row [ centerX, centerY, width fill, Font.center, Font.light, Font.size 40 ]
+        [ Element.column [ centerX, centerY, Font.center, width <| px <| 40 ]
+            [ Element.text "~" ]
+        ]
