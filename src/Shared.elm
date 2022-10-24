@@ -14,7 +14,8 @@ import FontAwesome.Brands exposing (github, twitter)
 import FontAwesome.Solid exposing (chevronCircleUp, envelope)
 import Html exposing (Html)
 import Html.Events exposing (onClick)
-import Pages.Flags
+import OptimizedDecoder as Decode exposing (Decoder)
+import Pages.Flags exposing (Flags(..))
 import Pages.PageUrl exposing (PageUrl)
 import Path exposing (Path)
 import Route exposing (Route)
@@ -44,6 +45,7 @@ type Msg
     | SharedMsg SharedMsg
     | ScrollToTop
     | Ignored
+    | ToggleMobileMenu
 
 
 type alias Data =
@@ -55,7 +57,63 @@ type SharedMsg
 
 
 type alias Model =
-    { showMobileMenu : Bool
+    { device : Device
+    , isMobileMenuOpen : Bool
+    }
+
+
+type DeviceClass
+    = Phone
+    | Desktop
+    | Tablet
+    | BigDesktop
+
+
+type Orientation
+    = Portrait
+    | Landscape
+
+
+type alias Device =
+    { class : DeviceClass
+    , orientation : Orientation
+    }
+
+
+classifyDeviceFromFlags : Flags -> Device
+classifyDeviceFromFlags flags =
+    classifyDevice { height = flags.y, width = flags.x }
+
+
+classifyDevice : { window | height : Int, width : Int } -> Device
+classifyDevice window =
+    -- Tested in this ellie:
+    -- https://ellie-app.com/68QM7wLW8b9a1
+    { class =
+        let
+            longSide =
+                max window.width window.height
+
+            shortSide =
+                min window.width window.height
+        in
+        if shortSide < 600 then
+            Phone
+
+        else if longSide <= 900 then
+            Tablet
+
+        else if longSide > 900 && longSide <= 1920 then
+            Desktop
+
+        else
+            BigDesktop
+    , orientation =
+        if window.width < window.height then
+            Portrait
+
+        else
+            Landscape
     }
 
 
@@ -74,29 +132,51 @@ init :
             }
     -> ( Model, Cmd Msg )
 init navigationKey flags maybePagePath =
-    ( { showMobileMenu = False }
+    ( { device =
+            case flags of
+                BrowserFlags browserFlags ->
+                    classifyDeviceFromFlags (Maybe.withDefault { x = 1200, y = 1200 } (Result.toMaybe (Decode.decodeValue decodeFlags browserFlags)))
+
+                PreRenderFlags ->
+                    { orientation = Portrait, class = Desktop }
+      , isMobileMenuOpen = False
+      }
     , Cmd.none
     )
+
+
+decodeFlags : Decoder Flags
+decodeFlags =
+    Decode.map2 Flags
+        (Decode.field "x" Decode.int)
+        (Decode.field "y" Decode.int)
+
+
+type alias Flags =
+    { x : Int
+    , y : Int
+    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         OnPageChange _ ->
-            ( { model | showMobileMenu = False }, Cmd.none )
+            ( model, Cmd.none )
 
         SharedMsg globalMsg ->
             ( model, Cmd.none )
 
         ScrollToTop ->
             ( model
-            , Cmd.none
-              --, setViewport 0 0
-              --  |> Task.attempt (always Ignored)
+            , scrollToTop
             )
 
         Ignored ->
             ( model, Cmd.none )
+
+        ToggleMobileMenu ->
+            ( { model | isMobileMenuOpen = not model.isMobileMenuOpen }, Cmd.none )
 
 
 subscriptions : Path -> Model -> Sub Msg
@@ -120,13 +200,22 @@ view :
     -> View msg
     -> { body : Html msg, title : String }
 view sharedData page model toMsg pageView =
-    { body = Element.layout defaultStyles (viewDefault pageView.body)
+    { body =
+        case model.device.class of
+            Desktop ->
+                Element.layout (defaultStyles toMsg) (viewDefault pageView.body)
+
+            Phone ->
+                Element.layout (phoneStyles toMsg) (viewPhoneDefault pageView.body model.isMobileMenuOpen toMsg)
+
+            _ ->
+                Element.layout (defaultStyles toMsg) (viewDefault pageView.body)
     , title = pageView.title
     }
 
 
-defaultStyles : List (Attribute msg)
-defaultStyles =
+defaultStyles : (Msg -> msg) -> List (Attribute msg)
+defaultStyles toMsg =
     [ Background.color theme.bgColor
     , Font.color theme.fontColor
     , Font.family
@@ -141,17 +230,38 @@ defaultStyles =
     , Font.justify
     , Background.color theme.bgColor
     , paddingEach { top = 20, bottom = 20, right = 0, left = 0 }
-    , Element.el [ padding 10, alignBottom, alignLeft, alpha 0.5 ] viewBackToTop |> Element.inFront
+    , Element.el [ padding 10, alignBottom, alignLeft, alpha 0.5 ] (viewBackToTop toMsg) |> Element.inFront
     ]
 
 
-viewBackToTop : Element msg
-viewBackToTop =
-    button [] { onPress = Nothing, label = Components.icon chevronCircleUp 30 }
+phoneStyles : (Msg -> msg) -> List (Attribute msg)
+phoneStyles toMsg =
+    [ Background.color theme.bgColor
+    , Font.color theme.fontColor
+    , Font.family
+        [ Font.external
+            { name = "Ubuntu"
+            , url = "https://fonts.googleapis.com/css2?family=Ubuntu:wght@100;300;400&display=swap"
+            }
+        ]
+    , Font.color theme.fontColor
+    , Font.size theme.phoneTextSize
+    , Font.regular
+    , Font.justify
+    , Background.color theme.bgColor
+    , paddingEach { top = 20, bottom = 20, right = 0, left = 0 }
+    , Element.el [ padding 10, alignBottom, alignLeft, alpha 0.5 ] (viewBackToTop toMsg) |> Element.inFront
+    ]
 
 
+viewBackToTop : (Msg -> msg) -> Element msg
+viewBackToTop toMsg =
+    button [] { onPress = Just (toMsg ScrollToTop), label = Components.icon chevronCircleUp 30 }
 
---Components.icon chevronCircleUp 30
+
+scrollToTop : Cmd Msg
+scrollToTop =
+    Browser.Dom.setViewport 0 0 |> Task.attempt (always Ignored)
 
 
 viewDefault : List (Element msg) -> Element msg
@@ -159,8 +269,13 @@ viewDefault page =
     Element.column
         [ centerX, width fill, spacing 10, Font.center ]
         [ viewHeader
-        , Element.row [ width fill ] [ Element.column [ width fill ] page ]
+        , viewPage page
         ]
+
+
+viewPage : List (Element msg) -> Element msg
+viewPage page =
+    Element.row [ width fill ] [ Element.column [ width fill ] page ]
 
 
 viewHeader : Element msg
@@ -200,3 +315,102 @@ viewSocialLinks =
         , viewNavLink (icon twitter 25) "https://twitter.com/sashintweets"
         , viewNavLink (icon envelope 25) "mailto://myself@sashinexists.com"
         ]
+
+
+viewPhoneDefault : List (Element msg) -> Bool -> (Msg -> msg) -> Element msg
+viewPhoneDefault page isMenuOpen toMsg =
+    Element.column
+        [ centerX, width fill, spacing 10, Font.center ]
+        [ viewPhoneHeader isMenuOpen toMsg
+        , if isMenuOpen then
+            viewPhoneNavigation
+
+          else
+            Element.text ""
+
+        --        , Element.row [ width fill ] [ Element.column [ width fill ] page ]
+        ]
+
+
+viewPhoneHeader : Bool -> (Msg -> msg) -> Element msg
+viewPhoneHeader isMenuOpen toMsg =
+    Element.row
+        [ width fill, Font.center, centerX, spaceEvenly, height <| px <| 50, paddingEach { top = 0, bottom = 0, right = 20, left = 20 } ]
+        [ viewPhoneSiteTitle, viewPhoneMenuButton isMenuOpen toMsg ]
+
+
+viewPhoneSiteTitle : Element msg
+viewPhoneSiteTitle =
+    Element.column [ Font.color theme.siteTitleColor, Font.size theme.phoneTitleSize, Font.light ] [ Element.link [] { url = "/", label = Element.text "Sashin Dev" } ]
+
+
+viewPhoneNavigation : Element msg
+viewPhoneNavigation =
+    Element.column
+        [ alignRight, Background.color theme.contentBgColor, paddingXY 0 20, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 0 } ]
+        [ viewPhoneNavLink (Element.text "Past Work") "/projects"
+        , viewPhoneNavLink (Element.text "Testimonials") "/testimonials"
+        , viewPhoneNavLink (Element.text "Skills") "/skills"
+        , viewPhoneNavLink (Element.text "Writing") "https://sashinexists.com"
+        , viewPhoneSocialLinks
+        ]
+
+
+viewPhoneNavLink : Element msg -> String -> Element msg
+viewPhoneNavLink label url =
+    Element.link
+        [ centerX
+        , centerY
+        , Font.size theme.textSize
+        , Font.color theme.navLinkColor
+        , mouseOver [ Font.color theme.navLinkHoverColor ]
+        , width fill
+        , Background.color theme.contentBgColorLighter
+        , height fill
+        , paddingXY 80 20
+        ]
+        { url = url, label = label }
+
+
+viewPhoneSocialLinks : Element msg
+viewPhoneSocialLinks =
+    Element.row
+        [ width fill, Font.color theme.fontColor, Font.size theme.textSize, spacing 40, paddingXY 20 20 ]
+        [ viewPhoneSocialLink (icon github 25) "https://github.com/sashinexists"
+        , viewPhoneSocialLink (icon twitter 25) "https://twitter.com/sashintweets"
+        , viewPhoneSocialLink (icon envelope 25) "mailto://myself@sashinexists.com"
+        ]
+
+
+viewPhoneSocialLink : Element msg -> String -> Element msg
+viewPhoneSocialLink label url =
+    Element.link
+        [ centerX
+        , centerY
+        , Font.size theme.textSize
+        , Font.color theme.navLinkColor
+        , mouseOver [ Font.color theme.navLinkHoverColor ]
+        , width fill
+        , Background.color theme.contentBgColorLighter
+        , height fill
+        ]
+        { url = url, label = label }
+
+
+viewPhoneMenuButton : Bool -> (Msg -> msg) -> Element msg
+viewPhoneMenuButton isMenuOpen toMsg =
+    if isMenuOpen then
+        viewPhoneCloseMenuButton toMsg
+
+    else
+        viewPhoneOpenMenuButton toMsg
+
+
+viewPhoneOpenMenuButton : (Msg -> msg) -> Element msg
+viewPhoneOpenMenuButton toMsg =
+    button [] { onPress = Just (toMsg ToggleMobileMenu), label = Element.text "open" }
+
+
+viewPhoneCloseMenuButton : (Msg -> msg) -> Element msg
+viewPhoneCloseMenuButton toMsg =
+    button [] { onPress = Just (toMsg ToggleMobileMenu), label = Element.text "close" }

@@ -39,4 +39,6 @@ theme =
     , componentHoverColorTransparent = colorPalette.eerieBlackLightestTransparent
     , textSize = 14
     , titleTextSize = 36
+    , phoneTextSize = 10
+    , phoneTitleSize = 20
     }
