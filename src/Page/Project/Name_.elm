@@ -177,7 +177,7 @@ viewProjectDetails details =
             (case markdownView details of
                 Ok rendered ->
                     List.map
-                        (\p -> Element.paragraph ([ Font.justify, width fill, Font.size 14, Font.light ] ++ defaultParagraphStyles) [ p ])
+                        (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
                         rendered
 
                 Err _ ->

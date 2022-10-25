@@ -25,29 +25,14 @@ type HeadingLevel
     | H6
 
 
-heading : String -> HeadingLevel -> Element msg
-heading title level =
-    Element.row
-        [ width fill, centerX, paddingEach { top = 25, bottom = 0, right = 0, left = 0 } ]
-        [ case level of
-            H1 ->
-                h1 title
+heading : String -> Element msg
+heading text =
+    Element.paragraph [ Font.size theme.textSizes.desktop.heading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
-            H2 ->
-                h2 title
 
-            H3 ->
-                h3 title
-
-            H4 ->
-                h4 title
-
-            H5 ->
-                h5 title
-
-            H6 ->
-                h6 title
-        ]
+phoneHeading : String -> Element msg
+phoneHeading text =
+    Element.paragraph [ Font.size theme.textSizes.phone.heading, Font.extraLight, width fill, Font.center, paddingEach { top = 20, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
 
 

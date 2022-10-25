@@ -37,8 +37,42 @@ theme =
     , contentBgColorLighterTransparent = colorPalette.eerieBlackLighterTransparent
     , componentHoverColor = colorPalette.eerieBlackLightest
     , componentHoverColorTransparent = colorPalette.eerieBlackLightestTransparent
-    , textSize = 14
-    , titleTextSize = 36
-    , phoneTextSize = 10
-    , phoneTitleSize = 20
+    , textSizes = textSizes
+    }
+
+
+textSizes =
+    { desktop =
+        { siteTitle = 36
+        , copy = 16
+        , footer = 14
+        , heading = 35
+        , subHeading = 20
+        , testimonialCopy = 20
+        , testimonialAuthorName = 15
+        , testimonialAuthorTitle = 11
+        , projectTitle = 25
+        , projectDescription = 18
+        , button = 20
+        , default = 14
+        , navLink = 14
+        , bannerText = 30
+        }
+    , phone =
+        { siteTitle = 20
+        , copy = 14
+        , footer = 10
+        , heading = 25
+        , subheading = 14
+        , testimonialCopy = 16
+        , testimonialAuthorName = 12
+        , testimonialAuthorTitle = 10
+        , projectTitle = 16
+        , projectDescription = 12
+        , button = 14
+        , default = 10
+        , navLink = 10
+        , menuOpenClose = 20
+        , bannerText = 14
+        }
     }

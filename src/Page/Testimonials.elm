@@ -1,7 +1,7 @@
 module Page.Testimonials exposing (Data, Model, Msg, page)
 
-import Common exposing (viewBanner, viewFooter, viewTestimonials)
-import Components exposing (h2, icon)
+import Common exposing (viewBanner, viewFooter, viewPhoneTestimonials, viewTestimonials)
+import Components exposing (heading, icon, phoneHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Testimonial)
 import Element exposing (..)
@@ -78,7 +78,17 @@ view :
     -> View Msg
 view maybeUrl sharedModel static =
     { title = "Rust/Elm Developer, at your service"
-    , body = [ viewPage static.data ]
+    , body =
+        [ case sharedModel.device.class of
+            Shared.Desktop ->
+                viewPage static.data
+
+            Shared.Phone ->
+                viewPhonePage static.data
+
+            _ ->
+                viewPage static.data
+        ]
     }
 
 
@@ -93,6 +103,22 @@ viewPage content =
 viewContent : Data -> Element msg
 viewContent content =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
-        [ h2 "Testimonials"
+        [ heading "Testimonials"
         , viewTestimonials content
+        ]
+
+
+viewPhonePage : Data -> Element msg
+viewPhonePage content =
+    Element.column [ centerX, centerY, width fill ]
+        [ viewPhoneContent content
+        , viewFooter
+        ]
+
+
+viewPhoneContent : Data -> Element msg
+viewPhoneContent content =
+    Element.column [ spacing 20, centerX, centerY, width fill, Background.color theme.contentBgColor, padding 20 ]
+        [ phoneHeading "Testimonials"
+        , viewPhoneTestimonials content
         ]

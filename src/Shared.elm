@@ -1,4 +1,4 @@
-module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
+module Shared exposing (Data, Device, DeviceClass(..), Model, Msg(..), SharedMsg(..), template)
 
 import Browser.Dom exposing (setViewport)
 import Browser.Navigation
@@ -11,6 +11,7 @@ import Element.Font as Font exposing (center, color, letterSpacing, wordSpacing)
 import Element.Input exposing (button)
 import FontAwesome exposing (Icon, view)
 import FontAwesome.Brands exposing (github, twitter)
+import FontAwesome.Regular exposing (caretSquareDown, circleXmark)
 import FontAwesome.Solid exposing (chevronCircleUp, envelope)
 import Html exposing (Html)
 import Html.Events exposing (onClick)
@@ -221,11 +222,11 @@ defaultStyles toMsg =
     , Font.family
         [ Font.external
             { name = "Ubuntu"
-            , url = "https://fonts.googleapis.com/css2?family=Ubuntu:wght@100;300;400&display=swap"
+            , url = "assets/fonts/Ubuntu-R.ttf"
             }
         ]
     , Font.color theme.fontColor
-    , Font.size theme.textSize
+    , Font.size theme.textSizes.desktop.default
     , Font.regular
     , Font.justify
     , Background.color theme.bgColor
@@ -241,11 +242,11 @@ phoneStyles toMsg =
     , Font.family
         [ Font.external
             { name = "Ubuntu"
-            , url = "https://fonts.googleapis.com/css2?family=Ubuntu:wght@100;300;400&display=swap"
+            , url = "assets/fonts/Ubuntu-R.ttf"
             }
         ]
     , Font.color theme.fontColor
-    , Font.size theme.phoneTextSize
+    , Font.size theme.textSizes.phone.default
     , Font.regular
     , Font.justify
     , Background.color theme.bgColor
@@ -287,7 +288,7 @@ viewHeader =
 
 viewSiteTitle : Element msg
 viewSiteTitle =
-    Element.column [ Font.color theme.siteTitleColor, Font.size theme.titleTextSize, Font.light ] [ Element.link [] { url = "/", label = Element.text "Sashin Dev" } ]
+    Element.column [ Font.color theme.siteTitleColor, Font.size theme.textSizes.desktop.siteTitle, Font.light ] [ Element.link [] { url = "/", label = Element.text "Sashin Dev" } ]
 
 
 viewNavigation : Element msg
@@ -304,13 +305,13 @@ viewNavigation =
 
 viewNavLink : Element msg -> String -> Element msg
 viewNavLink label url =
-    Element.link [ Font.size theme.textSize, Font.color theme.navLinkColor, mouseOver [ Font.color theme.navLinkHoverColor ] ] { url = url, label = label }
+    Element.link [ Font.size theme.textSizes.desktop.navLink, Font.color theme.navLinkColor, mouseOver [ Font.color theme.navLinkHoverColor ] ] { url = url, label = label }
 
 
 viewSocialLinks : Element msg
 viewSocialLinks =
     Element.row
-        [ Font.color theme.fontColor, Font.size theme.textSize, spacing 40, paddingEach { top = 0, left = 20, bottom = 0, right = 0 } ]
+        [ Font.color theme.fontColor, Font.size theme.textSizes.desktop.navLink, spacing 40, paddingEach { top = 0, left = 20, bottom = 0, right = 0 } ]
         [ viewNavLink (icon github 25) "https://github.com/sashinexists"
         , viewNavLink (icon twitter 25) "https://twitter.com/sashintweets"
         , viewNavLink (icon envelope 25) "mailto://myself@sashinexists.com"
@@ -322,26 +323,30 @@ viewPhoneDefault page isMenuOpen toMsg =
     Element.column
         [ centerX, width fill, spacing 10, Font.center ]
         [ viewPhoneHeader isMenuOpen toMsg
-        , if isMenuOpen then
-            viewPhoneNavigation
+        , Element.row
+            [ width fill
+            , Element.inFront
+                (if isMenuOpen then
+                    viewPhoneNavigation
 
-          else
-            Element.text ""
-
-        --        , Element.row [ width fill ] [ Element.column [ width fill ] page ]
+                 else
+                    Element.text ""
+                )
+            ]
+            [ Element.column [ width fill ] page ]
         ]
 
 
 viewPhoneHeader : Bool -> (Msg -> msg) -> Element msg
 viewPhoneHeader isMenuOpen toMsg =
     Element.row
-        [ width fill, Font.center, centerX, spaceEvenly, height <| px <| 50, paddingEach { top = 0, bottom = 0, right = 20, left = 20 } ]
+        [ width fill, Font.center, centerX, spaceEvenly, height <| px <| 30, paddingEach { top = 0, bottom = 0, right = 20, left = 20 } ]
         [ viewPhoneSiteTitle, viewPhoneMenuButton isMenuOpen toMsg ]
 
 
 viewPhoneSiteTitle : Element msg
 viewPhoneSiteTitle =
-    Element.column [ Font.color theme.siteTitleColor, Font.size theme.phoneTitleSize, Font.light ] [ Element.link [] { url = "/", label = Element.text "Sashin Dev" } ]
+    Element.column [ Font.color theme.siteTitleColor, Font.size theme.textSizes.phone.siteTitle, Font.light ] [ Element.link [] { url = "/", label = Element.text "Sashin Dev" } ]
 
 
 viewPhoneNavigation : Element msg
@@ -361,7 +366,7 @@ viewPhoneNavLink label url =
     Element.link
         [ centerX
         , centerY
-        , Font.size theme.textSize
+        , Font.size theme.textSizes.phone.navLink
         , Font.color theme.navLinkColor
         , mouseOver [ Font.color theme.navLinkHoverColor ]
         , width fill
@@ -375,7 +380,7 @@ viewPhoneNavLink label url =
 viewPhoneSocialLinks : Element msg
 viewPhoneSocialLinks =
     Element.row
-        [ width fill, Font.color theme.fontColor, Font.size theme.textSize, spacing 40, paddingXY 20 20 ]
+        [ width fill, Font.color theme.fontColor, Font.size theme.textSizes.phone.navLink, spacing 40, paddingXY 20 20 ]
         [ viewPhoneSocialLink (icon github 25) "https://github.com/sashinexists"
         , viewPhoneSocialLink (icon twitter 25) "https://twitter.com/sashintweets"
         , viewPhoneSocialLink (icon envelope 25) "mailto://myself@sashinexists.com"
@@ -387,7 +392,7 @@ viewPhoneSocialLink label url =
     Element.link
         [ centerX
         , centerY
-        , Font.size theme.textSize
+        , Font.size theme.textSizes.phone.navLink
         , Font.color theme.navLinkColor
         , mouseOver [ Font.color theme.navLinkHoverColor ]
         , width fill
@@ -408,9 +413,9 @@ viewPhoneMenuButton isMenuOpen toMsg =
 
 viewPhoneOpenMenuButton : (Msg -> msg) -> Element msg
 viewPhoneOpenMenuButton toMsg =
-    button [] { onPress = Just (toMsg ToggleMobileMenu), label = Element.text "open" }
+    button [ Font.size theme.textSizes.phone.menuOpenClose, Font.light ] { onPress = Just (toMsg ToggleMobileMenu), label = Element.text "☰" }
 
 
 viewPhoneCloseMenuButton : (Msg -> msg) -> Element msg
 viewPhoneCloseMenuButton toMsg =
-    button [] { onPress = Just (toMsg ToggleMobileMenu), label = Element.text "close" }
+    button [ Font.size theme.textSizes.phone.menuOpenClose, Font.light ] { onPress = Just (toMsg ToggleMobileMenu), label = Element.text "⮾" }

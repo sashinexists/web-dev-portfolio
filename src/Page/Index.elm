@@ -3,7 +3,7 @@ module Page.Index exposing (Data, Model, Msg, page)
 --import Browser.Dom exposing (Element)
 
 import Common exposing (..)
-import Components exposing (h2, icon)
+import Components exposing (heading, icon, phoneHeading)
 import DataSource exposing (DataSource)
 import DataSource.File
 import Datatypes exposing (Project, Skill, Testimonial)
@@ -24,7 +24,7 @@ import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Projects exposing (projects)
-import Shared exposing (Msg)
+import Shared exposing (DeviceClass(..), Msg)
 import Skills exposing (skills, viewSkillIcon)
 import Styles exposing (..)
 import Testimonials exposing (testimonials)
@@ -98,7 +98,17 @@ view :
     -> View Msg
 view maybeUrl sharedModel static =
     { title = "Rust/Elm Developer, at your service"
-    , body = [ viewPage static.data ]
+    , body =
+        [ case sharedModel.device.class of
+            Shared.Desktop ->
+                viewPage static.data
+
+            Shared.Phone ->
+                viewPhonePage static.data
+
+            _ ->
+                viewPage static.data
+        ]
     }
 
 
@@ -116,9 +126,9 @@ viewContent content =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
         [ viewIntro content.about
         , viewStack content.skills
-        , h2 "Testimonials"
+        , heading "Testimonials"
         , viewTestimonials content.testimonials
-        , h2 "Past Work"
+        , heading "Past Work"
         , viewProjects content.projects
         ]
 
@@ -129,7 +139,43 @@ viewIntro content =
         Ok rendered ->
             Element.column [ width fill, spacing 20, paddingEach { top = 20, bottom = 5, left = 20, right = 20 } ]
                 (List.map
-                    (\p -> Element.paragraph ([ Font.justify, width fill, Font.size 16, Font.light ] ++ defaultParagraphStyles) [ p ])
+                    (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
+                    rendered
+                )
+
+        Err _ ->
+            Element.text "This should be pulling text from the file \"data/about.md\", but it's not working."
+
+
+viewPhonePage : Data -> Element msg
+viewPhonePage content =
+    Element.column [ centerX, centerY, width fill ]
+        [ viewPhoneBanner
+        , viewPhoneContent content
+        , viewFooter
+        ]
+
+
+viewPhoneContent : Data -> Element msg
+viewPhoneContent content =
+    Element.column [ spacing 10, centerX, centerY, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
+        [ viewPhoneIntro content.about
+
+        --       , viewStack content.skills
+        , phoneHeading "Testimonials"
+        , viewPhoneTestimonials content.testimonials
+        , phoneHeading "Past Work"
+        , viewPhoneProjects content.projects
+        ]
+
+
+viewPhoneIntro : String -> Element msg
+viewPhoneIntro content =
+    case markdownView content of
+        Ok rendered ->
+            Element.column [ width fill, spacing 20, paddingEach { top = 20, bottom = 5, left = 20, right = 20 } ]
+                (List.map
+                    (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.phone.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
                     rendered
                 )
 

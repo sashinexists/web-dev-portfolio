@@ -1,4 +1,4 @@
-module Common exposing (viewBanner, viewBannerContent, viewBannerImage, viewFooter, viewProject, viewProjectDetails, viewProjectImage, viewProjectTitle, viewProjects, viewStack, viewTestimonial, viewTestimonials)
+module Common exposing (viewBanner, viewBannerContent, viewBannerImage, viewFooter, viewPhoneBanner, viewPhoneProjects, viewPhoneTestimonial, viewPhoneTestimonials, viewProject, viewProjectDetails, viewProjectImage, viewProjectTitle, viewProjects, viewStack, viewTestimonial, viewTestimonials)
 
 import Components exposing (h2, icon)
 import DataSource exposing (DataSource)
@@ -70,7 +70,7 @@ viewBannerContent =
             , centerX
             , centerY
             , Font.extraLight
-            , Font.size 30
+            , Font.size theme.textSizes.desktop.bannerText
             , Font.center
             , centerX
             ]
@@ -82,7 +82,49 @@ viewBannerContent =
                 , Font.center
                 , width fill
                 ]
-                [ Element.text "Crafting Artisan Websites for Creators and Innovators" ]
+                [ Element.text "Crafting Better Software for Creators and Innovators" ]
+            ]
+        ]
+
+
+viewPhoneBanner : Element msg
+viewPhoneBanner =
+    Element.row
+        [ width fill, centerX, centerY, Element.inFront viewPhoneBannerContent ]
+        [ viewPhoneBannerImage ]
+
+
+viewPhoneBannerImage : Element msg
+viewPhoneBannerImage =
+    Element.image
+        [ width fill, height fill, centerX, centerY ]
+        { src = "assets/images/banner-alternate.jpg"
+        , description = "banner"
+        }
+
+
+viewPhoneBannerContent : Element msg
+viewPhoneBannerContent =
+    Element.column [ width fill, centerX, Font.center, alignBottom, spacing 100 ]
+        [ Element.row
+            [ height fill
+            , width fill
+            , centerX
+            , centerY
+            , Font.light
+            , Font.size theme.textSizes.phone.bannerText
+            , Font.center
+            , centerX
+            ]
+            [ Element.paragraph
+                [ centerX
+                , padding 10
+                , Background.color theme.contentBgColorDarkerTransparent
+                , centerY
+                , Font.center
+                , width fill
+                ]
+                [ Element.text "Crafting Better Software for Creators and Innovators" ]
             ]
         ]
 
@@ -116,14 +158,14 @@ viewTestimonial testimonial =
                 , Element.column [ spacing 15, height fill, width fill, centerY, padding 20 ]
                     [ Element.column [ spacing 5 ]
                         [ icon quoteLeft 25
-                        , Element.paragraph [ Font.alignLeft, width fill, Font.size 20, Font.light, centerY ] [ Element.text testimonial.text ]
+                        , Element.paragraph [ Font.alignLeft, width fill, Font.size theme.textSizes.desktop.testimonialCopy, Font.light, centerY ] [ Element.text testimonial.text ]
                         ]
                     , Element.column [ spacing 5 ]
                         [ Element.paragraph
                             [ Font.alignLeft
                             , width fill
                             , centerY
-                            , Font.size 15
+                            , Font.size theme.textSizes.desktop.testimonialAuthorName
                             , Font.regular
                             ]
                             [ Element.text testimonial.author.name ]
@@ -131,7 +173,61 @@ viewTestimonial testimonial =
                             [ Font.alignLeft
                             , width fill
                             , centerY
-                            , Font.size 11
+                            , Font.size theme.textSizes.desktop.testimonialAuthorTitle
+                            , Font.regular
+                            ]
+                            [ Element.text testimonial.author.title, Element.text ", ", Element.text testimonial.author.organisation ]
+                        ]
+                    ]
+                ]
+        }
+
+
+viewPhoneTestimonials : List Testimonial -> Element msg
+viewPhoneTestimonials testimonials =
+    Element.column [ width fill, centerX, spacing 20 ]
+        (List.map
+            (\p -> viewPhoneTestimonial p)
+            testimonials
+        )
+
+
+viewPhoneTestimonial : Testimonial -> Element msg
+viewPhoneTestimonial testimonial =
+    Element.link
+        [ Background.color theme.contentBgColorLighter
+        , rounded 10
+        , padding 20
+        , mouseOver [ Font.color theme.navLinkHoverColor, Background.color theme.componentHoverColor ]
+        ]
+        { url = "/testimonial/" ++ testimonial.slug
+        , label =
+            Element.column []
+                [ Element.row [ width fill ]
+                    [ Element.image [ width <| px <| 140, height <| px <| 140, centerX, centerY, rounded 200, clip, centerX, centerY ]
+                        { src = testimonial.author.photo.url
+                        , description = testimonial.text
+                        }
+                    ]
+                , Element.column [ spacing 15, height fill, width fill, centerY, padding 20 ]
+                    [ Element.column [ spacing 5 ]
+                        [ icon quoteLeft 25
+                        , Element.paragraph [ Font.alignLeft, width fill, Font.size theme.textSizes.phone.testimonialCopy, Font.light, centerY ] [ Element.text testimonial.text ]
+                        ]
+                    , Element.column [ spacing 5 ]
+                        [ Element.paragraph
+                            [ Font.alignLeft
+                            , width fill
+                            , centerY
+                            , Font.size theme.textSizes.phone.testimonialAuthorName
+                            , Font.regular
+                            ]
+                            [ Element.text testimonial.author.name ]
+                        , Element.paragraph
+                            [ Font.alignLeft
+                            , width fill
+                            , centerY
+                            , Font.size theme.textSizes.phone.testimonialAuthorTitle
                             , Font.regular
                             ]
                             [ Element.text testimonial.author.title, Element.text ", ", Element.text testimonial.author.organisation ]
@@ -186,7 +282,7 @@ viewProject project =
 
 viewProjectTitle : Project -> Element msg
 viewProjectTitle project =
-    Element.row [ height fill, width fill, centerX, centerY, Font.light, Font.size 25, Font.center, centerX, width fill, centerX, alignTop, Font.center, alignBottom, spacing 30 ]
+    Element.row [ height fill, width fill, centerX, centerY, Font.light, Font.size theme.textSizes.desktop.projectTitle, Font.center, centerX, width fill, centerX, alignTop, Font.center, alignBottom, spacing 30 ]
         [ Element.paragraph
             [ centerX
             , padding 15
@@ -231,7 +327,131 @@ viewProjectDetails project =
             , centerX
             , centerY
             , Font.light
-            , Font.size 18
+            , Font.size theme.textSizes.desktop.projectDescription
+            , Font.center
+            , centerX
+            ]
+            [ Element.paragraph
+                [ centerX
+                , padding 20
+                , roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }
+                , Background.color theme.contentBgColorDarkerTransparent
+                , mouseOver [ Background.color theme.componentHoverColorTransparent ]
+                , centerY
+                , Font.center
+                , width fill
+                ]
+                [ Element.text project.description ]
+            ]
+        ]
+
+
+viewPhoneProjects : List Project -> Element msg
+viewPhoneProjects projects =
+    Element.column [ width fill, centerX, spacing 60 ]
+        (List.map
+            (\p -> viewPhoneProject p)
+            projects
+        )
+
+
+viewPhoneProject : Project -> Element msg
+viewPhoneProject project =
+    Element.link
+        [ width fill
+        , centerX
+        , centerY
+        , Background.color theme.contentBgColorLighter
+        , rounded 10
+        , mouseOver [ Font.color theme.navLinkHoverColor, Background.color theme.componentHoverColor ]
+        , Element.inFront
+            (Element.el
+                [ height fill
+                , width fill
+                , Background.color theme.contentBgColor
+                , alpha 0.2
+                , mouseOver [ alpha 0 ]
+                ]
+                (Element.text "")
+            )
+        ]
+        { url = "/project/" ++ project.slug
+        , label =
+            Element.column
+                [ width fill
+                , centerX
+                , centerY
+                , Element.inFront (viewPhoneProjectDetails project)
+                ]
+                [ viewPhoneProjectTitle project
+                , viewPhoneProjectImage project
+                ]
+        }
+
+
+viewPhoneProjectTitle : Project -> Element msg
+viewPhoneProjectTitle project =
+    Element.row
+        [ height fill
+        , width fill
+        , centerX
+        , centerY
+        , Font.light
+        , Font.size theme.textSizes.phone.projectTitle
+        , Font.center
+        , centerX
+        , width fill
+        , centerX
+        , alignTop
+        , Font.center
+        , alignBottom
+        , spacing 30
+        ]
+        [ Element.paragraph
+            [ centerX
+            , padding 15
+            , roundEach { topLeft = 10, topRight = 10, bottomLeft = 0, bottomRight = 0 }
+            , centerY
+            , Font.center
+            , width fill
+            ]
+            [ Element.text project.title ]
+        ]
+
+
+viewPhoneProjectImage : Project -> Element msg
+viewPhoneProjectImage project =
+    Element.row []
+        [ Element.image
+            [ width fill
+            , height fill
+            , centerX
+            , centerY
+            , roundEach { topLeft = 10, topRight = 10, bottomLeft = 10, bottomRight = 10 }
+            , clip
+            ]
+            { src = project.screenshotUrl
+            , description = project.description
+            }
+        ]
+
+
+viewPhoneProjectDetails : Project -> Element msg
+viewPhoneProjectDetails project =
+    Element.column
+        [ width fill
+        , centerX
+        , Font.center
+        , alignBottom
+        , spacing 30
+        ]
+        [ Element.row
+            [ height fill
+            , width fill
+            , centerX
+            , centerY
+            , Font.light
+            , Font.size theme.textSizes.phone.projectDescription
             , Font.center
             , centerX
             ]
