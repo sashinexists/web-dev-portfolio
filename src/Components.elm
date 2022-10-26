@@ -30,9 +30,29 @@ heading text =
     Element.paragraph [ Font.size theme.textSizes.desktop.heading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
 
+pageHeading : String -> Element msg
+pageHeading text =
+    Element.paragraph [ Font.size theme.textSizes.desktop.heading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 10, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+
+
 phoneHeading : String -> Element msg
 phoneHeading text =
     Element.paragraph [ Font.size theme.textSizes.phone.heading, Font.extraLight, width fill, Font.center, paddingEach { top = 20, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+
+
+phonePageHeading : String -> Element msg
+phonePageHeading text =
+    Element.paragraph [ Font.size theme.textSizes.phone.heading, Font.extraLight, width fill, Font.center, paddingEach { top = 5, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+
+
+subHeading : String -> Element msg
+subHeading text =
+    Element.paragraph [ Font.size theme.textSizes.desktop.subHeading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+
+
+phoneSubHeading : String -> Element msg
+phoneSubHeading text =
+    Element.paragraph [ Font.size theme.textSizes.phone.subHeading, Font.extraLight, width fill, Font.center, paddingEach { top = 10, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
 
 
@@ -51,14 +71,19 @@ h2 text =
     Element.paragraph [ Font.size 35, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
 
-pageHeading : String -> Element msg
-pageHeading text =
-    Element.paragraph [ Font.size 35, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 0, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
-
-
 h3 : String -> Element msg
 h3 text =
     Element.paragraph [ Font.size 20, Font.light ] [ Element.text text ]
+
+
+buttonLabel : String -> Element msg
+buttonLabel text =
+    Element.paragraph [ Font.size theme.textSizes.desktop.button, Font.light ] [ Element.text text ]
+
+
+phoneButtonLabel : String -> Element msg
+phoneButtonLabel text =
+    Element.paragraph [ Font.size theme.textSizes.phone.button, Font.light ] [ Element.text text ]
 
 
 pageSubheading : String -> Element msg

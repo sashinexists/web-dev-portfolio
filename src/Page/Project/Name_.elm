@@ -1,7 +1,7 @@
 module Page.Project.Name_ exposing (Data, Model, Msg, page)
 
-import Common exposing (viewBanner, viewFooter, viewProjects, viewStack, viewTestimonial, viewTestimonials)
-import Components exposing (h2, h3, icon, pageHeading, pageSubheading)
+import Common exposing (viewBanner, viewFooter, viewPhoneTestimonial, viewPhoneTestimonials, viewProjects, viewStack, viewTestimonial, viewTestimonials)
+import Components exposing (buttonLabel, heading, icon, pageHeading, phoneButtonLabel, phoneHeading, phonePageHeading, phoneSubHeading, subHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Project)
 import Element exposing (..)
@@ -96,7 +96,17 @@ view :
     -> View Msg
 view maybeUrl sharedModel static =
     { title = "Rust/Elm Developer, at your service"
-    , body = [ viewPage static.data ]
+    , body =
+        [ case sharedModel.device.class of
+            Shared.Desktop ->
+                viewPage static.data
+
+            Shared.Phone ->
+                viewPhonePage static.data
+
+            _ ->
+                viewPage static.data
+        ]
     }
 
 
@@ -124,7 +134,7 @@ viewProjectPage : Project -> Element msg
 viewProjectPage project =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
         [ pageHeading project.title
-        , pageSubheading
+        , subHeading
             project.description
         , viewProjectImage project
         , Element.row [ spacing 50, width fill, centerX, centerY ]
@@ -132,12 +142,12 @@ viewProjectPage project =
             , viewProjectButton "View Project Online" project.websiteUrl (icon globe 25)
             ]
         , viewProjectDetails project.about
-        , h3 "Skills"
+        , heading "Skills"
         , viewStack project.skills
         , case project.testimonial of
             Just testimonial ->
                 Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
-                    [ h3 "Testimonial"
+                    [ heading "Testimonial"
                     , viewTestimonial testimonial
                     ]
 
@@ -165,7 +175,7 @@ viewProjectImage project =
 
 viewProjectButton : String -> String -> Element msg -> Element msg
 viewProjectButton title url icon =
-    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, h3 title ] }
+    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, buttonLabel title ] }
 
 
 viewProjectDetails : String -> Element msg
@@ -178,6 +188,93 @@ viewProjectDetails details =
                 Ok rendered ->
                     List.map
                         (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
+                        rendered
+
+                Err _ ->
+                    [ Element.text "failed to render markdown" ]
+            )
+        ]
+
+
+viewPhonePage : Data -> Element msg
+viewPhonePage content =
+    Element.column [ centerX, centerY, width fill ]
+        [ viewPhoneContent content
+        , viewFooter
+        ]
+
+
+viewPhoneContent : Data -> Element msg
+viewPhoneContent content =
+    Element.column [ spacing 20, centerX, centerY, width fill, Background.color theme.contentBgColor, padding 20 ]
+        [ case List.head content of
+            Just project ->
+                viewPhoneProjectPage project
+
+            Nothing ->
+                Element.text "Something went wrong here."
+        ]
+
+
+viewPhoneProjectPage : Project -> Element msg
+viewPhoneProjectPage project =
+    Element.column [ spacing 20, centerX, centerY, width fill, Background.color theme.contentBgColor, padding 20 ]
+        [ phonePageHeading project.title
+        , phoneSubHeading
+            project.description
+        , viewProjectImage project
+        , Element.column [ spacing 10, width fill, centerX, centerY ]
+            [ viewPhoneProjectButton "View on GitHub" project.gitHubUrl (icon github 25)
+            , viewPhoneProjectButton "View Project Online" project.websiteUrl (icon globe 25)
+            ]
+        , viewPhoneProjectDetails project.about
+        , phoneHeading "Skills"
+
+        -- , viewStack project.skills
+        , case project.testimonial of
+            Just testimonial ->
+                Element.column [ spacing 20, centerX, centerY, width fill, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
+                    [ phoneHeading "Testimonial"
+                    , viewPhoneTestimonial testimonial
+                    ]
+
+            Nothing ->
+                Element.text ""
+        ]
+
+
+viewPhoneProjectImage : Project -> Element msg
+viewPhoneProjectImage project =
+    Element.row []
+        [ Element.image
+            [ width fill
+            , height fill
+            , centerX
+            , centerY
+            , roundEach { topLeft = 10, topRight = 10, bottomLeft = 10, bottomRight = 10 }
+            , clip
+            ]
+            { src = project.screenshotUrl
+            , description = project.description
+            }
+        ]
+
+
+viewPhoneProjectButton : String -> String -> Element msg -> Element msg
+viewPhoneProjectButton title url icon =
+    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, phoneButtonLabel title ] }
+
+
+viewPhoneProjectDetails : String -> Element msg
+viewPhoneProjectDetails details =
+    Element.row
+        [ width fill ]
+        [ Element.column
+            [ width fill, spacing 30, padding 20 ]
+            (case markdownView details of
+                Ok rendered ->
+                    List.map
+                        (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.phone.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
                         rendered
 
                 Err _ ->
