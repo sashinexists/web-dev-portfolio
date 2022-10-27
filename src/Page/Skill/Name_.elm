@@ -1,12 +1,13 @@
 module Page.Skill.Name_ exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewStack)
-import Components exposing (h2, h3)
+import Components exposing (buttonLabel, icon, pageHeading, pageSubheading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Skill)
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border exposing (roundEach, rounded)
+import FontAwesome.Solid exposing (globe)
 import Head
 import Head.Seo as Seo
 import Page exposing (Page, PageWithState, StaticPayload)
@@ -108,7 +109,7 @@ viewPage content =
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
+    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
         [ case List.head content of
             Just skill ->
                 viewSkillPage skill
@@ -121,8 +122,24 @@ viewContent content =
 viewSkillPage : Skill -> Element msg
 viewSkillPage skill =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
-        [ h2 skill.name
-        , h3 skill.description
-        , Element.link [] { url = skill.website, label = Element.text "Go to website" }
+        [ Element.row [ spacing 10, centerY ] [ viewSkillIcon skill, pageHeading skill.name ]
+        , pageSubheading skill.description
+        , viewWebsiteButton ("Go to " ++ skill.name ++ " Website") skill.website (icon globe 25)
         , Element.paragraph [] [ Element.text skill.about ]
         ]
+
+
+viewSkillIcon : Skill -> Element msg
+viewSkillIcon skill =
+    link [ height fill, width <| px <| 50, centerX, centerY, mouseOver [ Background.color theme.componentHoverColor ], paddingEach { top = 10, bottom = 10, left = 0, right = 0 } ]
+        { url = "/skill/" ++ skill.slug
+        , label =
+            Element.image
+                [ centerX, centerY, height <| px <| 40, width <| px <| 40 ]
+                { description = skill.name, src = skill.thumbnail }
+        }
+
+
+viewWebsiteButton : String -> String -> Element msg -> Element msg
+viewWebsiteButton title url icon =
+    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, buttonLabel title ] }

@@ -1,7 +1,7 @@
 module Page.Skills exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewStack)
-import Components exposing (h2)
+import Components exposing (buttonLabel, heading, pageHeading, pageSubheading, subHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Skill)
 import Element exposing (..)
@@ -92,6 +92,45 @@ viewPage content =
 viewContent : Data -> Element msg
 viewContent content =
     Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
-        [ h2 "Skills"
+        [ pageHeading "Skills"
         , viewStack content
+        , viewSkills content
         ]
+
+
+viewSkills : List Skill -> Element msg
+viewSkills skills =
+    Element.column [ spacing 20, width fill ]
+        (List.map
+            (\skill -> viewSkillSummary skill)
+            skills
+        )
+
+
+viewSkillSummary : Skill -> Element msg
+viewSkillSummary skill =
+    link [ Background.color theme.contentBgColorLighter, rounded 10, mouseOver [ Background.color theme.componentHoverColor ], width fill ]
+        { url = "/skill/" ++ skill.slug
+        , label =
+            Element.column
+                [ spacing 10, padding 20, width fill, Font.alignLeft ]
+                [ Element.row [ spacing 10, centerY ] [ viewSkillIcon skill, buttonHeading skill.name ]
+                , buttonLabel skill.description
+                ]
+        }
+
+
+viewSkillIcon : Skill -> Element msg
+viewSkillIcon skill =
+    link [ height fill, width <| px <| 50, centerX, centerY, mouseOver [ Background.color theme.componentHoverColor ], paddingEach { top = 10, bottom = 10, left = 0, right = 0 } ]
+        { url = "/skill/" ++ skill.slug
+        , label =
+            Element.image
+                [ centerX, centerY, height <| px <| 40, width <| px <| 40 ]
+                { description = skill.name, src = skill.thumbnail }
+        }
+
+
+buttonHeading : String -> Element msg
+buttonHeading text =
+    Element.paragraph [ Font.size theme.textSizes.desktop.heading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 0, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
