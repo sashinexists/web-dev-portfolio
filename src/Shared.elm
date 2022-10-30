@@ -163,7 +163,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         OnPageChange _ ->
-            ( model, Cmd.none )
+            ( { model | isMobileMenuOpen = False }, Cmd.none )
 
         SharedMsg globalMsg ->
             ( model, Cmd.none )
@@ -352,7 +352,7 @@ viewPhoneSiteTitle =
 viewPhoneNavigation : Element msg
 viewPhoneNavigation =
     Element.column
-        [ alignRight, Background.color theme.contentBgColorLighter, paddingXY 0 20, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 0 } ]
+        [ alignRight, Background.color theme.contentBgColorLighterTransparent, paddingXY 0 20, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 0 }, Element.Border.solid, Element.Border.color theme.fontColor, Element.Border.shadow { offset = ( -1, -1 ), size = 2, blur = 10.0, color = theme.contentBgColorDarkerTransparent } ]
         [ viewPhoneNavLink (Element.text "Past Work") "/projects"
         , viewPhoneNavLink (Element.text "Testimonials") "/testimonials"
         , viewPhoneNavLink (Element.text "Skills") "/skills"
@@ -370,7 +370,6 @@ viewPhoneNavLink label url =
         , Font.color theme.navLinkColor
         , mouseOver [ Font.color theme.navLinkHoverColor ]
         , width fill
-        , Background.color theme.contentBgColorLighter
         , height fill
         , paddingXY 80 20
         ]
