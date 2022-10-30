@@ -1,7 +1,7 @@
 module Page.Skills exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewStack)
-import Components exposing (buttonLabel, heading, pageHeading, pageSubheading, subHeading)
+import Components exposing (buttonLabel, heading, pageHeading, pageSubheading, phonePageHeading, subHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Skill)
 import Element exposing (..)
@@ -16,6 +16,7 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Shared
 import Skills exposing (skills, viewSkillIcon)
+import Styles exposing (defaultParagraphStyles)
 import Theme exposing (theme)
 import View exposing (View)
 
@@ -77,7 +78,17 @@ view :
     -> View Msg
 view maybeUrl sharedModel static =
     { title = "Rust/Elm Developer, at your service"
-    , body = [ viewPage static.data ]
+    , body =
+        [ case sharedModel.device.class of
+            Shared.Desktop ->
+                viewPage static.data
+
+            Shared.Phone ->
+                viewPhonePage static.data
+
+            _ ->
+                viewPage static.data
+        ]
     }
 
 
@@ -134,3 +145,19 @@ viewSkillIcon skill =
 buttonHeading : String -> Element msg
 buttonHeading text =
     Element.paragraph [ Font.size theme.textSizes.desktop.heading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 0, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+
+
+viewPhonePage : Data -> Element msg
+viewPhonePage content =
+    Element.column [ centerX, centerY, width fill ]
+        [ viewPhoneContent content
+        , viewFooter
+        ]
+
+
+viewPhoneContent : Data -> Element msg
+viewPhoneContent content =
+    Element.column [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, padding 20 ]
+        [ phonePageHeading "Skills"
+        , viewSkills content
+        ]

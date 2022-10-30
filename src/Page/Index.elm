@@ -69,7 +69,7 @@ head :
 head static =
     Seo.summary
         { canonicalUrlOverride = Nothing
-        , siteName = "elm-pages"
+        , siteName = "Sashin Dev"
         , image =
             { url = Pages.Url.external "TODO"
             , alt = "elm-pages logo"
@@ -78,7 +78,7 @@ head static =
             }
         , description = "TODO"
         , locale = Nothing
-        , title = "TODO title" -- metadata.title -- TODO
+        , title = "Sashin Dev" -- metadata.title -- TODO
         }
         |> Seo.website
 

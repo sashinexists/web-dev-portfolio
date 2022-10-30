@@ -352,7 +352,7 @@ viewPhoneSiteTitle =
 viewPhoneNavigation : Element msg
 viewPhoneNavigation =
     Element.column
-        [ alignRight, Background.color theme.contentBgColor, paddingXY 0 20, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 0 } ]
+        [ alignRight, Background.color theme.contentBgColorLighter, paddingXY 0 20, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 0 } ]
         [ viewPhoneNavLink (Element.text "Past Work") "/projects"
         , viewPhoneNavLink (Element.text "Testimonials") "/testimonials"
         , viewPhoneNavLink (Element.text "Skills") "/skills"
