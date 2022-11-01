@@ -1,7 +1,7 @@
 module Page.Testimonial.Name_ exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewPhoneTestimonials, viewTestimonials)
-import Components exposing (h2)
+import Components exposing (pageContainer, pageHeading, phonePageHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Testimonial)
 import Element exposing (..)
@@ -110,8 +110,8 @@ viewPage content =
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
-        [ h2 "Testimonial"
+    pageContainer []
+        [ pageHeading "Testimonial"
         , viewTestimonials content
         ]
 
@@ -127,6 +127,6 @@ viewPhonePage content =
 viewPhoneContent : Data -> Element msg
 viewPhoneContent content =
     Element.column [ spacing 20, centerX, centerY, width fill, Background.color theme.contentBgColor, padding 20 ]
-        [ h2 "Testimonial"
+        [ phonePageHeading "Testimonial"
         , viewPhoneTestimonials content
         ]

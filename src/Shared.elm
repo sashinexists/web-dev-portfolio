@@ -1,6 +1,7 @@
 module Shared exposing (Data, Device, DeviceClass(..), Model, Msg(..), SharedMsg(..), template)
 
 import Browser.Dom exposing (setViewport)
+import Browser.Events
 import Browser.Navigation
 import Components exposing (icon)
 import DataSource
@@ -47,6 +48,7 @@ type Msg
     | ScrollToTop
     | Ignored
     | ToggleMobileMenu
+    | GotNewWidth ( Int, Int )
 
 
 type alias Data =
@@ -179,10 +181,17 @@ update msg model =
         ToggleMobileMenu ->
             ( { model | isMobileMenuOpen = not model.isMobileMenuOpen }, Cmd.none )
 
+        GotNewWidth ( width, height ) ->
+            ( { model
+                | device = classifyDevice { height = height, width = width }
+              }
+            , Cmd.none
+            )
+
 
 subscriptions : Path -> Model -> Sub Msg
 subscriptions _ _ =
-    Sub.none
+    Browser.Events.onResize (\w h -> GotNewWidth ( w, h ))
 
 
 data : DataSource.DataSource Data
@@ -231,7 +240,7 @@ defaultStyles toMsg =
     , Font.justify
     , Background.color theme.bgColor
     , paddingEach { top = 20, bottom = 20, right = 0, left = 0 }
-    , Element.el [ padding 10, alignBottom, alignLeft, alpha 0.5 ] (viewBackToTop toMsg) |> Element.inFront
+    , Element.el [ padding 10, alignBottom, alignRight, alpha 0.5 ] (viewBackToTop toMsg) |> Element.inFront
     ]
 
 
@@ -251,7 +260,7 @@ phoneStyles toMsg =
     , Font.justify
     , Background.color theme.bgColor
     , paddingEach { top = 20, bottom = 20, right = 0, left = 0 }
-    , Element.el [ padding 10, alignBottom, alignLeft, alpha 0.5 ] (viewBackToTop toMsg) |> Element.inFront
+    , Element.el [ padding 10, alignBottom, alignRight, alpha 0.5 ] (viewBackToTop toMsg) |> Element.inFront
     ]
 
 
@@ -282,7 +291,7 @@ viewPage page =
 viewHeader : Element msg
 viewHeader =
     Element.row
-        [ width fill, Font.center, centerX, spaceEvenly, height <| px <| 50, paddingEach { top = 0, bottom = 0, right = 20, left = 20 } ]
+        [ width fill, Font.center, centerX, spaceEvenly, paddingEach { top = 10, bottom = 20, right = 20, left = 20 } ]
         [ viewSiteTitle, viewNavigation ]
 
 
@@ -298,7 +307,7 @@ viewNavigation =
         [ viewNavLink (Element.text "Past Work") "/projects"
         , viewNavLink (Element.text "Testimonials") "/testimonials"
         , viewNavLink (Element.text "Skills") "/skills"
-        , viewNavLink (Element.text "Writing") "https://sashinexists.com"
+        , viewNavLink (Element.text "Writing") "/writing"
         , viewSocialLinks
         ]
 

@@ -1,7 +1,7 @@
 module Page.Projects exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewPhoneProjects, viewProjects, viewTestimonials)
-import Components exposing (heading, phoneHeading)
+import Components exposing (pageContainer, pageHeading, phoneHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Project)
 import Element exposing (..)
@@ -103,8 +103,8 @@ viewPage content =
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
-        [ heading "Past Work"
+    pageContainer []
+        [ pageHeading "Past Work"
         , viewProjects content
         ]
 

@@ -1,6 +1,6 @@
-module Common exposing (viewBanner, viewBannerContent, viewBannerImage, viewFooter, viewPhoneBanner, viewPhoneProjects, viewPhoneTestimonial, viewPhoneTestimonials, viewProject, viewProjectDetails, viewProjectImage, viewProjectTitle, viewProjects, viewStack, viewTestimonial, viewTestimonials)
+module Common exposing (viewBanner, viewBannerContent, viewBannerImage, viewFooter, viewPhoneBanner, viewPhoneProjects, viewPhoneTestimonial, viewPhoneTestimonials, viewProject, viewProjectDetails, viewProjectImage, viewProjectTitle, viewProjects, viewStack, viewTestimonial, viewTestimonials, viewWebsiteButton)
 
-import Components exposing (h2, icon)
+import Components exposing (buttonLabel, h2, icon)
 import DataSource exposing (DataSource)
 import DataSource.File
 import Datatypes exposing (Project, Skill, Testimonial)
@@ -27,6 +27,11 @@ import Styles exposing (..)
 import Testimonials exposing (testimonials)
 import Theme exposing (theme)
 import View exposing (View)
+
+
+viewWebsiteButton : String -> String -> Element msg -> Element msg
+viewWebsiteButton title url icon =
+    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, buttonLabel title ] }
 
 
 viewStack : List Skill -> Element msg

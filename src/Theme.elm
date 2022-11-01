@@ -37,6 +37,7 @@ theme =
     , contentBgColorLighterTransparent = colorPalette.eerieBlackLighterTransparent
     , componentHoverColor = colorPalette.eerieBlackLightest
     , componentHoverColorTransparent = colorPalette.eerieBlackLightestTransparent
+    , pageTitleColor = colorPalette.middleGreen
     , textSizes = textSizes
     }
 
@@ -57,6 +58,7 @@ textSizes =
         , default = 14
         , navLink = 14
         , bannerText = 30
+        , pageHeading = 24
         }
     , phone =
         { siteTitle = 20
@@ -74,5 +76,6 @@ textSizes =
         , navLink = 10
         , menuOpenClose = 20
         , bannerText = 14
+        , pageHeading = 18
         }
     }

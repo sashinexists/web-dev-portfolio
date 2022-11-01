@@ -1,6 +1,15 @@
-module Datatypes exposing (Person, Photo, Project, Skill, SkillThumbnail(..), Testimonial)
+module Datatypes exposing (Blog, Person, Photo, Project, Skill, SkillThumbnail(..), Testimonial)
 
 import FontAwesome exposing (Icon, WithoutId)
+
+
+type alias Blog =
+    { title : String
+    , tags : List String
+    , content : String
+    , slug : String
+    , createdAt : String
+    }
 
 
 type alias Testimonial =

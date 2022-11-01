@@ -3,7 +3,7 @@ module Page.Index exposing (Data, Model, Msg, page)
 --import Browser.Dom exposing (Element)
 
 import Common exposing (..)
-import Components exposing (heading, icon, phoneHeading)
+import Components exposing (copy, heading, icon, phoneHeading)
 import DataSource exposing (DataSource)
 import DataSource.File
 import Datatypes exposing (Project, Skill, Testimonial)
@@ -139,7 +139,7 @@ viewIntro content =
         Ok rendered ->
             Element.column [ width fill, spacing 20, paddingEach { top = 20, bottom = 5, left = 20, right = 20 } ]
                 (List.map
-                    (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
+                    (\p -> copy p)
                     rendered
                 )
 

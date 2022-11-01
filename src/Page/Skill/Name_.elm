@@ -1,7 +1,7 @@
 module Page.Skill.Name_ exposing (Data, Model, Msg, page)
 
-import Common exposing (viewBanner, viewFooter, viewStack)
-import Components exposing (buttonLabel, icon, pageHeading, pageSubheading)
+import Common exposing (viewBanner, viewFooter, viewStack, viewWebsiteButton)
+import Components exposing (buttonLabel, icon, pageContainer, pageHeading, pageSubHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Skill)
 import Element exposing (..)
@@ -121,7 +121,7 @@ viewPage content =
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
+    Element.column [ centerX, centerY ]
         [ case List.head content of
             Just skill ->
                 viewSkillPage skill
@@ -133,9 +133,9 @@ viewContent content =
 
 viewSkillPage : Skill -> Element msg
 viewSkillPage skill =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
+    pageContainer []
         [ Element.row [ spacing 10, centerY ] [ viewSkillIcon skill, pageHeading skill.name ]
-        , pageSubheading skill.description
+        , pageSubHeading skill.description
         , viewWebsiteButton ("Go to " ++ skill.name ++ " Website") skill.website (icon globe 25)
         , Element.paragraph [] [ Element.text skill.about ]
         ]
@@ -150,11 +150,6 @@ viewSkillIcon skill =
                 [ centerX, centerY, height <| px <| 40, width <| px <| 40 ]
                 { description = skill.name, src = skill.thumbnail }
         }
-
-
-viewWebsiteButton : String -> String -> Element msg -> Element msg
-viewWebsiteButton title url icon =
-    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, buttonLabel title ] }
 
 
 viewPhonePage : Data -> Element msg
@@ -181,7 +176,7 @@ viewPhoneSkillPage : Skill -> Element msg
 viewPhoneSkillPage skill =
     Element.column [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, padding 20 ]
         [ Element.row [ spacing 10, centerY ] [ viewPhoneSkillIcon skill, pageHeading skill.name ]
-        , pageSubheading skill.description
+        , pageSubHeading skill.description
         , viewWebsiteButton ("Go to " ++ skill.name ++ " Website") skill.website (icon globe 25)
         , Element.paragraph
             ([ Font.justify, width fill, Font.size theme.textSizes.phone.copy, Font.light ] ++ defaultParagraphStyles)

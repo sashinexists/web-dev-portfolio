@@ -1,7 +1,7 @@
 module Page.Testimonials exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewPhoneTestimonials, viewTestimonials)
-import Components exposing (heading, icon, phoneHeading)
+import Components exposing (heading, icon, pageContainer, pageHeading, phoneHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Testimonial)
 import Element exposing (..)
@@ -102,8 +102,8 @@ viewPage content =
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
-        [ heading "Testimonials"
+    pageContainer []
+        [ pageHeading "Testimonials"
         , viewTestimonials content
         ]
 

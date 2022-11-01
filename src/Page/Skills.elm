@@ -1,7 +1,7 @@
 module Page.Skills exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewStack)
-import Components exposing (buttonLabel, heading, pageHeading, pageSubheading, phonePageHeading, subHeading)
+import Components exposing (buttonLabel, heading, pageContainer, pageHeading, pageSubHeading, phonePageHeading, subHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Skill)
 import Element exposing (..)
@@ -102,7 +102,7 @@ viewPage content =
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
+    pageContainer []
         [ pageHeading "Skills"
         , viewStack content
         , viewSkills content

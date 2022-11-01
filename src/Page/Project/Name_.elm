@@ -1,7 +1,7 @@
 module Page.Project.Name_ exposing (Data, Model, Msg, page)
 
 import Common exposing (viewBanner, viewFooter, viewPhoneTestimonial, viewPhoneTestimonials, viewProjects, viewStack, viewTestimonial, viewTestimonials)
-import Components exposing (buttonLabel, heading, icon, pageHeading, phoneButtonLabel, phoneHeading, phonePageHeading, phoneSubHeading, subHeading)
+import Components exposing (buttonLabel, heading, icon, pageContainer, pageHeading, pageSubHeading, phoneButtonLabel, phoneHeading, phonePageHeading, phoneSubHeading, subHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Project)
 import Element exposing (..)
@@ -120,7 +120,7 @@ viewPage content =
 
 viewContent : Data -> Element msg
 viewContent content =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
+    Element.column [ centerX, centerY ]
         [ case List.head content of
             Just project ->
                 viewProjectPage project
@@ -132,9 +132,9 @@ viewContent content =
 
 viewProjectPage : Project -> Element msg
 viewProjectPage project =
-    Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, rounded 10, padding 20 ]
+    pageContainer []
         [ pageHeading project.title
-        , subHeading
+        , pageSubHeading
             project.description
         , viewProjectImage project
         , Element.row [ spacing 50, width fill, centerX, centerY ]
@@ -146,7 +146,7 @@ viewProjectPage project =
         , viewStack project.skills
         , case project.testimonial of
             Just testimonial ->
-                Element.column [ spacing 20, centerX, centerY, width <| px <| 768, Background.color theme.contentBgColor, roundEach { topLeft = 0, topRight = 0, bottomLeft = 10, bottomRight = 10 }, padding 20 ]
+                Element.column [ spacing 20 ]
                     [ heading "Testimonial"
                     , viewTestimonial testimonial
                     ]

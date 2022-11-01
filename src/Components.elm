@@ -7,7 +7,7 @@ import Element.Font as Font exposing (center, color, letterSpacing, wordSpacing)
 import Element.Input
 import FontAwesome exposing (Icon)
 import Html
-import Html.Attributes exposing (property)
+import Html.Attributes exposing (attribute, property)
 import Markdown.Block as Block exposing (Block, Inline, ListItem(..), Task(..))
 import Markdown.Html
 import Markdown.Parser
@@ -25,6 +25,21 @@ type HeadingLevel
     | H6
 
 
+pageContainer : List (Attribute msg) -> List (Element msg) -> Element msg
+pageContainer attributes elements =
+    Element.column (attributes ++ [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, rounded 10, padding 50, width <| px <| 768 ]) elements
+
+
+blockContainer : List (Attribute msg) -> List (Element msg) -> Element msg
+blockContainer attributes elements =
+    Element.column (attributes ++ [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, rounded 10, padding 50, width <| px <| 768 ]) elements
+
+
+copy : Element msg -> Element msg
+copy text =
+    Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] ++ defaultParagraphStyles) [ text ]
+
+
 heading : String -> Element msg
 heading text =
     Element.paragraph [ Font.size theme.textSizes.desktop.heading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
@@ -32,7 +47,7 @@ heading text =
 
 pageHeading : String -> Element msg
 pageHeading text =
-    Element.paragraph [ Font.size theme.textSizes.desktop.heading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 10, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+    Element.paragraph [ Font.color theme.pageTitleColor, Font.size theme.textSizes.desktop.pageHeading, Font.light, width fill, Font.alignLeft, paddingEach { top = 10, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
 
 
 phoneHeading : String -> Element msg
@@ -48,6 +63,11 @@ phonePageHeading text =
 subHeading : String -> Element msg
 subHeading text =
     Element.paragraph [ Font.size theme.textSizes.desktop.subHeading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 30, bottom = 0, right = 0, left = 0 } ] [ Element.text text ]
+
+
+pageSubHeading : String -> Element msg
+pageSubHeading text =
+    Element.paragraph [ Font.size theme.textSizes.desktop.subHeading, Font.extraLight, width fill, Font.alignLeft, paddingEach { top = 0, bottom = 10, right = 0, left = 0 } ] [ Element.text text ]
 
 
 phoneSubHeading : String -> Element msg
@@ -84,17 +104,6 @@ buttonLabel text =
 phoneButtonLabel : String -> Element msg
 phoneButtonLabel text =
     Element.paragraph [ Font.size theme.textSizes.phone.button, Font.light ] [ Element.text text ]
-
-
-pageSubheading : String -> Element msg
-pageSubheading text =
-    Element.paragraph
-        [ Font.size 18
-        , Font.light
-        , alignLeft
-        , Font.alignLeft
-        ]
-        [ Element.text text ]
 
 
 h4 : String -> Element msg
