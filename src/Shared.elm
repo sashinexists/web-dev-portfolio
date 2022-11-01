@@ -365,7 +365,7 @@ viewPhoneNavigation =
         [ viewPhoneNavLink (Element.text "Past Work") "/projects"
         , viewPhoneNavLink (Element.text "Testimonials") "/testimonials"
         , viewPhoneNavLink (Element.text "Skills") "/skills"
-        , viewPhoneNavLink (Element.text "Writing") "https://sashinexists.com"
+        , viewPhoneNavLink (Element.text "Writing") "/writing"
         , viewPhoneSocialLinks
         ]
 

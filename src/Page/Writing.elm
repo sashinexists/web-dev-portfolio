@@ -119,9 +119,26 @@ viewIntro : Element msg
 viewIntro =
     pageContainer []
         [ pageHeading "Writing"
-        , copy (Element.text "I'm a writer as well as a coder.")
+        , case markdownView intro of
+            Ok rendered ->
+                Element.column [ width fill, spacing 20, paddingEach { top = 10, bottom = 15, left = 0, right = 0 } ]
+                    (List.map
+                        (\p -> copy p)
+                        rendered
+                    )
+
+            Err _ ->
+                Element.text ""
         , viewWebsiteButton "Go to the Sashin Exists Website" "https://sashinexists.com" (icon globe 25)
         ]
+
+
+intro : String
+intro =
+    """Below is my blog on all things software and technology related.
+
+
+If you would rather read my main body of work on science, philosophy, politics and more please click the button below to visit my main website."""
 
 
 viewBlogPosts : List Blog -> Element msg
