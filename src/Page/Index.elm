@@ -16,10 +16,8 @@ import FontAwesome.Brands exposing (github)
 import FontAwesome.Solid exposing (quoteLeft)
 import Head
 import Head.Seo as Seo
-import Html.Attributes exposing (align)
 import Html.Events exposing (onMouseOver)
 import MarkdownRendering exposing (markdownView)
-import OptimizedDecoder as Decode exposing (Decoder)
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
