@@ -308,6 +308,7 @@ viewNavigation =
         , viewNavLink (Element.text "Testimonials") "/testimonials"
         , viewNavLink (Element.text "Skills") "/skills"
         , viewNavLink (Element.text "Writing") "/writing"
+        , viewNavLink (Element.text "Now") "/now"
         , viewSocialLinks
         ]
 
@@ -366,6 +367,7 @@ viewPhoneNavigation =
         , viewPhoneNavLink (Element.text "Testimonials") "/testimonials"
         , viewPhoneNavLink (Element.text "Skills") "/skills"
         , viewPhoneNavLink (Element.text "Writing") "/writing"
+        , viewPhoneNavLink (Element.text "Now") "/now"
         , viewPhoneSocialLinks
         ]
 
