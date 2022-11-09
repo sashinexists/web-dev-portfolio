@@ -1,6 +1,6 @@
 module Page.Now exposing (Data, Model, Msg, page)
 
-import Components exposing (copy, heading, pageContainer, pageHeading, pageSubHeading, thematicBreak)
+import Components exposing (copy, heading, link, pageContainer, pageHeading, pageSubHeading, thematicBreak)
 import DataSource exposing (DataSource)
 import DataSource.Http
 import Element exposing (..)
@@ -19,6 +19,8 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Secrets as Secrets
 import Pages.Url
 import Shared
+import Styles exposing (defaultBoxShadow, defaultBoxStyles, defaultParagraphStyles, noBoxShadow)
+import Theme exposing (theme)
 import View exposing (View)
 
 
@@ -49,7 +51,7 @@ type alias Data =
 
 data : DataSource Data
 data =
-    DataSource.Http.get (Secrets.succeed "https://sashinexists.com/ghost/api/content/posts/?key=a93c602f45b7a332c633569ada&filter=tag:now&formats=html") decodeNow
+    DataSource.Http.get (Secrets.succeed "https://sashinexists.com/ghost/api/content/posts/?key=7056a7f95687eb9648aecc5777&filter=tag:now&formats=html") decodeNow
 
 
 decodeNow : Decoder Now
@@ -109,10 +111,34 @@ viewPage : Now -> Element msg
 viewPage now =
     pageContainer [ width fill ]
         [ pageHeading "Now"
-        , pageSubHeading ("Last updated " ++ now.publishedDate)
+        , Element.row []
+            [ Element.image
+                [ width fill
+                , height fill
+                , centerX
+                , centerY
+                , roundEach { topLeft = 10, topRight = 10, bottomLeft = 10, bottomRight = 10 }
+                , clip
+                ]
+                { src = "assets/images/now-banner.jpg"
+                , description = "banner"
+                }
+            ]
+        , Element.paragraph ([ width fill, alignLeft, Font.alignLeft ] ++ defaultParagraphStyles) [ Element.text "A now page inspired by the one on Derek Sivers' website." ]
+        , Element.row [ padding 20, centerX, centerY, width fill ]
+            [ Element.column [ spacing 20, width fill, Background.color theme.contentBgColorDarker, rounded 10, padding 20, centerX, centerY ]
+                [ Element.paragraph
+                    [ width fill ]
+                    [ Element.text ("Last updated " ++ now.publishedDate) ]
+                , Element.paragraph
+                    [ width fill ]
+                    [ Components.link { destination = "https://sashinexists.com/now-archive", title = Just "Click here for past Now pages. " } [ Element.text "Click here for past Now pages" ]
+                    ]
+                ]
+            ]
         , case Html.Parser.run Html.Parser.noCharRefs now.content of
             Ok nodes ->
-                Element.column [ spacing 5, width fill ] (List.map (\node -> copy (viewNode node)) nodes)
+                Element.column [ spacing 15, width fill ] (List.map (\node -> viewNode node) nodes)
 
             Err _ ->
                 Element.text ""
@@ -130,14 +156,34 @@ viewNode node =
                 "a" ->
                     Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-decoration:none;color:#52aa5e;" ) ]) children))
 
+                "ul" ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-align:left;" ) ]) children))
+
+                "li" ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-align:left;" ) ]) children))
+
+                "figure" ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "padding:20px;background-color: #1f1f1f;border-radius:10px;" ) ]) children))
+
+                "img" ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "border-radius:10px; width:100%; object-fit:cover;" ) ]) children))
+
                 "hr" ->
                     thematicBreak
 
+                "p" ->
+                    copy (Element.paragraph [] (List.map (\child -> Element.html (Html.Parser.nodeToHtml child)) children))
+
                 _ ->
-                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag attributes children))
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag [] children))
 
         Html.Parser.Text content ->
-            Element.html (Html.Parser.nodeToHtml (Html.Parser.Text content))
+            Element.paragraph [] [ Element.html (Html.Parser.nodeToHtml (Html.Parser.Text content)) ]
 
         Html.Parser.Comment content ->
             Element.text ""
+
+
+pageCopy : Element msg -> Element msg
+pageCopy text =
+    Element.paragraph [ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] [ text ]
