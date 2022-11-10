@@ -124,7 +124,7 @@ viewPage now =
                 , description = "banner"
                 }
             ]
-        , Element.paragraph ([ width fill, alignLeft, Font.alignLeft ] ++ defaultParagraphStyles) [ Element.text "A now page inspired by the one on Derek Sivers' website." ]
+        , copy (Element.paragraph ([ width fill, alignLeft, Font.alignLeft ] ++ defaultParagraphStyles) [ Element.text "A now page inspired by the one on Derek Sivers' website." ])
         , Element.row [ padding 20, centerX, centerY, width fill ]
             [ Element.column [ spacing 20, width fill, Background.color theme.contentBgColorDarker, rounded 10, padding 20, centerX, centerY ]
                 [ Element.paragraph
@@ -151,13 +151,13 @@ viewNode node =
         Html.Parser.Element tag attributes children ->
             case tag of
                 "h3" ->
-                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "font-weight:200;font-size:30px;" ) ]) children))
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "font-weight:200;font-size:30px;padding:0;margin:0;margin-bottom:10px;margin-top:10px;" ) ]) children))
 
                 "a" ->
                     Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-decoration:none;color:#52aa5e;" ) ]) children))
 
                 "ul" ->
-                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-align:left;" ) ]) children))
+                    copy (Element.paragraph [ spacing 15 ] [ Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-align:left;" ) ]) children)) ])
 
                 "li" ->
                     Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-align:left;" ) ]) children))
