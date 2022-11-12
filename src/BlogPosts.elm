@@ -1,4 +1,4 @@
-module BlogPosts exposing (blogPosts)
+module BlogPosts exposing (blogPostFromSlug, blogPosts, blogPostsWithTag)
 
 --import Json.Decode.extra as Decode
 
@@ -13,6 +13,16 @@ import Pages.Secrets as Secrets
 blogPosts : DataSource (List Blog)
 blogPosts =
     DataSource.Http.get (Secrets.succeed "https://cdn.contentful.com/spaces/gh3negosphjh/environments/master/entries?content_type=blog&access_token=TY_E9VvxnyO2jK19-khEq6VbH_eqaDepbu4TzXGUNZU&order=-sys.createdAt") decodeBlogPosts
+
+
+blogPostsWithTag : String -> DataSource (List Blog)
+blogPostsWithTag tag =
+    DataSource.Http.get (Secrets.succeed ("https://cdn.contentful.com/spaces/gh3negosphjh/environments/master/entries?content_type=blog&access_token=TY_E9VvxnyO2jK19-khEq6VbH_eqaDepbu4TzXGUNZU&order=-sys.createdAt&metadata.tags.sys.id[in]=" ++ tag)) decodeBlogPosts
+
+
+blogPostFromSlug : String -> DataSource (List Blog)
+blogPostFromSlug slug =
+    DataSource.Http.get (Secrets.succeed ("https://cdn.contentful.com/spaces/gh3negosphjh/environments/master/entries?content_type=blog&access_token=TY_E9VvxnyO2jK19-khEq6VbH_eqaDepbu4TzXGUNZU&order=-sys.createdAt&fields.slug=" ++ slug)) decodeBlogPosts
 
 
 decodeBlogPosts : Decoder (List Blog)
