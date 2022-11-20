@@ -2,7 +2,7 @@ module Page.Blog.Name_ exposing (Data, Model, Msg, page)
 
 import BlogPosts exposing (blogPostFromSlug, blogPostsWithTag)
 import Common exposing (viewBanner, viewFooter, viewPhoneProjects, viewProjects, viewTestimonials, viewWebsiteButton)
-import Components exposing (copy, heading, icon, pageContainer, pageHeading, phoneHeading)
+import Components exposing (copy, heading, icon, pageContainer, pageHeading, phoneHeading, phonePageHeading)
 import DataSource exposing (DataSource)
 import DataSource.Http
 import Datatypes exposing (Blog)
@@ -24,6 +24,7 @@ import Pages.Url
 import Route exposing (Route)
 import Shared
 import String.Extra exposing (humanize, toTitleCase)
+import Styles exposing (defaultParagraphStyles)
 import Theme exposing (theme)
 import View exposing (View)
 
@@ -107,8 +108,9 @@ view maybeUrl sharedModel static =
             Shared.Desktop ->
                 viewPage static.data static.routeParams
 
-            -- Shared.Phone ->
-            -- viewPhonePage static.data
+            Shared.Phone ->
+                viewPhonePage static.data
+
             _ ->
                 viewPage static.data static.routeParams
         ]
@@ -213,3 +215,99 @@ viewBlogPostTag tag =
 slugToTitle : String -> String
 slugToTitle slug =
     toTitleCase <| humanize <| slug
+
+
+viewPhonePage : Data -> Element msg
+viewPhonePage content =
+    Element.column [ centerX, centerY, width fill ]
+        [ viewPhoneContent content
+        , viewFooter
+        ]
+
+
+viewPhoneContent : Data -> Element msg
+viewPhoneContent content =
+    Element.column [ spacing 20, centerX, centerY ]
+        [ viewPhoneBlogPosts content
+        ]
+
+
+viewPhoneBlogPosts : List Blog -> Element msg
+viewPhoneBlogPosts posts =
+    Element.column [ width fill, spacing 30 ]
+        (List.map viewPhoneBlogPost posts)
+
+
+viewPhoneBlogPost : Blog -> Element msg
+viewPhoneBlogPost post =
+    Element.row
+        [ spacing 50, Background.color theme.contentBgColor, padding 40, width fill, Font.alignLeft, Font.size 16 ]
+        [ Element.column
+            [ width fill, spacing 30 ]
+            [ viewPhoneBlogPostHeader post
+            , Element.row
+                [ width fill ]
+                [ Element.column
+                    [ width fill, spacing 40 ]
+                    (case markdownView post.content of
+                        Ok rendered ->
+                            List.map
+                                (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.phone.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
+                                rendered
+
+                        Err _ ->
+                            [ Element.text "failed to render markdown" ]
+                    )
+                ]
+            ]
+        ]
+
+
+viewPhoneBlogPostHeader : Blog -> Element msg
+viewPhoneBlogPostHeader post =
+    Element.column
+        [ width fill, spacing 20, Font.center ]
+        [ viewPhoneBlogPostTitle post.title post.slug
+        , viewPhoneBlogPostDate post.createdAt
+        , viewPhoneBlogPostTags post.tags
+        ]
+
+
+viewPhoneBlogPostTitle : String -> String -> Element msg
+viewPhoneBlogPostTitle title slug =
+    Element.link
+        [ Font.color theme.fontLinkColor, mouseOver [ Font.color theme.fontLinkHoverColor ], Font.center ]
+        { label = phonePageHeading title
+        , url = "/blog/" ++ slug
+        }
+
+
+viewPhoneBlogPostDate : String -> Element msg
+viewPhoneBlogPostDate date =
+    Element.paragraph
+        [ Font.size 10, Font.center ]
+        [ Element.text
+            (case toTime date of
+                Ok formattedDate ->
+                    formatPosixDate formattedDate
+
+                Err _ ->
+                    "bad date"
+            )
+        ]
+
+
+viewPhoneBlogPostTags : List String -> Element msg
+viewPhoneBlogPostTags tags =
+    Element.row
+        [ spacing 10 ]
+        (List.map viewPhoneBlogPostTag tags)
+
+
+viewPhoneBlogPostTag : String -> Element msg
+viewPhoneBlogPostTag tag =
+    Element.link
+        [ mouseOver [ Background.color theme.componentHoverColor ], padding 10, rounded 5, Background.color theme.contentBgColorLighter ]
+        { label = Element.paragraph [ Font.size 10 ] [ Element.text (slugToTitle tag) ]
+        , url = "/tag/" ++ tag
+        }

@@ -1,6 +1,6 @@
 module Page.Now exposing (Data, Model, Msg, page)
 
-import Components exposing (copy, heading, link, pageContainer, pageHeading, pageSubHeading, thematicBreak)
+import Components exposing (copy, heading, link, pageContainer, pageHeading, pageSubHeading, phoneCopy, phoneHeading, phonePageContainer, phonePageHeading, thematicBreak)
 import DataSource exposing (DataSource)
 import DataSource.Http
 import Element exposing (..)
@@ -99,8 +99,9 @@ view maybeUrl sharedModel static =
             Shared.Desktop ->
                 viewPage static.data
 
-            -- Shared.Phone ->
-            --      viewPhonePage static.data
+            Shared.Phone ->
+                viewPhonePage static.data
+
             _ ->
                 viewPage static.data
         ]
@@ -187,3 +188,80 @@ viewNode node =
 pageCopy : Element msg -> Element msg
 pageCopy text =
     Element.paragraph [ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] [ text ]
+
+
+viewPhonePage : Now -> Element msg
+viewPhonePage now =
+    phonePageContainer [ width fill ]
+        [ phonePageHeading "Now"
+        , Element.row [ width fill ]
+            [ Element.image
+                [ width fill
+                , height fill
+                , centerX
+                , centerY
+                , roundEach { topLeft = 10, topRight = 10, bottomLeft = 10, bottomRight = 10 }
+                , clip
+                ]
+                { src = "assets/images/now-banner.jpg"
+                , description = "banner"
+                }
+            ]
+        , phoneCopy (Element.paragraph ([ width fill, alignLeft, Font.alignLeft ] ++ defaultParagraphStyles) [ Element.text "A now page inspired by the one on Derek Sivers' website." ])
+        , Element.row [ padding 20, centerX, centerY, width fill ]
+            [ Element.column [ spacing 20, width fill, Background.color theme.contentBgColorDarker, rounded 10, padding 20, centerX, centerY ]
+                [ Element.paragraph
+                    [ width fill ]
+                    [ Element.text ("Last updated " ++ now.publishedDate) ]
+                , Element.paragraph
+                    [ width fill ]
+                    [ Components.link { destination = "https://sashinexists.com/now-archive", title = Just "Click here for past Now pages. " } [ Element.text "Click here for past Now pages" ]
+                    ]
+                ]
+            ]
+        , case Html.Parser.run Html.Parser.noCharRefs now.content of
+            Ok nodes ->
+                Element.column [ spacing 15, width fill ] (List.map (\node -> viewPhoneNode node) nodes)
+
+            Err _ ->
+                Element.text ""
+        ]
+
+
+viewPhoneNode : Html.Parser.Node -> Element msg
+viewPhoneNode node =
+    case node of
+        Html.Parser.Element tag attributes children ->
+            case tag of
+                "h3" ->
+                    phoneCopy (Element.paragraph [ spacing 20 ] [ Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "font-weight:200;font-size:25px;padding:0;margin:0;margin-bottom:10px;margin-top:10px;max-width:100%;" ) ]) children)) ])
+
+                "a" ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-decoration:none;color:#52aa5e;max-width:100%;" ) ]) children))
+
+                "ul" ->
+                    phoneCopy (Element.paragraph [ spacing 15 ] [ Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-align:left;max-width:50%;" ) ]) children)) ])
+
+                "li" ->
+                    phoneCopy (Element.paragraph [] [ Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "text-align:left;max-width:100%;" ) ]) children)) ])
+
+                "figure" ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "padding:20px;background-color: #1f1f1f;border-radius:10px;max-width:100%;display:none;" ) ]) children))
+
+                "img" ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag (attributes ++ [ ( "style", "border-radius:10px; width:100%; object-fit:cover;max-width:100%;" ), ( "width", "100%" ) ]) children))
+
+                "hr" ->
+                    thematicBreak
+
+                "p" ->
+                    phoneCopy (Element.paragraph [ width fill ] (List.map (\child -> Element.html (Html.Parser.nodeToHtml child)) children))
+
+                _ ->
+                    Element.html (Html.Parser.nodeToHtml (Html.Parser.Element tag [ ( "style", "max-width:100%;" ) ] children))
+
+        Html.Parser.Text content ->
+            Element.paragraph [ width fill ] [ Element.html (Html.Parser.nodeToHtml (Html.Parser.Text content)) ]
+
+        Html.Parser.Comment content ->
+            Element.text ""

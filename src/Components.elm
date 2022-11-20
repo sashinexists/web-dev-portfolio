@@ -30,6 +30,11 @@ pageContainer attributes elements =
     Element.column (attributes ++ [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, rounded 10, padding 50, width <| px <| 768 ]) elements
 
 
+phonePageContainer : List (Attribute msg) -> List (Element msg) -> Element msg
+phonePageContainer attributes elements =
+    Element.column (attributes ++ [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, padding 25, width fill ]) elements
+
+
 blockContainer : List (Attribute msg) -> List (Element msg) -> Element msg
 blockContainer attributes elements =
     Element.column (attributes ++ [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, rounded 10, padding 50, width <| px <| 768 ]) elements
@@ -38,6 +43,11 @@ blockContainer attributes elements =
 copy : Element msg -> Element msg
 copy text =
     Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.desktop.copy, Font.light ] ++ defaultParagraphStyles) [ text ]
+
+
+phoneCopy : Element msg -> Element msg
+phoneCopy text =
+    Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.phone.copy, Font.light ] ++ defaultParagraphStyles) [ text ]
 
 
 heading : String -> Element msg

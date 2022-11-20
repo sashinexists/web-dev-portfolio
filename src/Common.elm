@@ -1,6 +1,6 @@
-module Common exposing (viewBanner, viewBannerContent, viewBannerImage, viewFooter, viewPhoneBanner, viewPhoneProjects, viewPhoneTestimonial, viewPhoneTestimonials, viewProject, viewProjectDetails, viewProjectImage, viewProjectTitle, viewProjects, viewStack, viewTestimonial, viewTestimonials, viewWebsiteButton)
+module Common exposing (viewBanner, viewBannerContent, viewBannerImage, viewFooter, viewPhoneBanner, viewPhoneProjects, viewPhoneTestimonial, viewPhoneTestimonials, viewPhoneWebsiteButton, viewProject, viewProjectDetails, viewProjectImage, viewProjectTitle, viewProjects, viewStack, viewTestimonial, viewTestimonials, viewWebsiteButton)
 
-import Components exposing (buttonLabel, h2, icon)
+import Components exposing (buttonLabel, h2, icon, phoneButtonLabel)
 import DataSource exposing (DataSource)
 import DataSource.File
 import Datatypes exposing (Project, Skill, Testimonial)
@@ -32,6 +32,11 @@ import View exposing (View)
 viewWebsiteButton : String -> String -> Element msg -> Element msg
 viewWebsiteButton title url icon =
     Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, buttonLabel title ] }
+
+
+viewPhoneWebsiteButton : String -> String -> Element msg -> Element msg
+viewPhoneWebsiteButton title url icon =
+    Element.link [ padding 20, spaceEvenly, Background.color theme.contentBgColorLighter, rounded 10, centerX, centerY, width fill, mouseOver [ Background.color theme.componentHoverColor ] ] { url = url, label = Element.row [ spacing 10, width fill, centerX, centerY ] [ icon, phoneButtonLabel title ] }
 
 
 viewStack : List Skill -> Element msg

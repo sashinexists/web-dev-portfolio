@@ -1,8 +1,8 @@
 module Page.Writing exposing (Data, Model, Msg, page)
 
 import BlogPosts exposing (blogPosts)
-import Common exposing (viewBanner, viewFooter, viewPhoneProjects, viewProjects, viewTestimonials, viewWebsiteButton)
-import Components exposing (copy, heading, icon, pageContainer, pageHeading, phoneHeading)
+import Common exposing (viewBanner, viewFooter, viewPhoneProjects, viewPhoneWebsiteButton, viewProjects, viewTestimonials, viewWebsiteButton)
+import Components exposing (copy, heading, icon, pageContainer, pageHeading, phoneCopy, phoneHeading, phonePageContainer, phonePageHeading)
 import DataSource exposing (DataSource)
 import Datatypes exposing (Blog)
 import DateTime exposing (formatPosixDate)
@@ -23,6 +23,7 @@ import Pages.Secrets as Secrets
 import Pages.Url
 import Shared
 import String.Extra exposing (humanize, toTitleCase)
+import Styles exposing (defaultParagraphStyles)
 import Theme exposing (theme)
 import Time exposing (Posix)
 import View exposing (View)
@@ -237,12 +238,106 @@ viewPhonePage content =
 
 viewPhoneContent : Data -> Element msg
 viewPhoneContent content =
-    Element.column [ spacing 20, centerX, centerY, Background.color theme.contentBgColor, padding 20 ]
-        [ phoneHeading "Writing"
+    Element.column [ spacing 20, centerX, centerY ]
+        [ viewPhoneIntro
         , viewPhoneBlogPosts content
+        ]
+
+
+viewPhoneIntro : Element msg
+viewPhoneIntro =
+    phonePageContainer [ Background.color theme.contentBgColor ]
+        [ phonePageHeading "Writing"
+        , case markdownView intro of
+            Ok rendered ->
+                Element.column [ width fill, spacing 20, paddingEach { top = 10, bottom = 15, left = 0, right = 0 } ]
+                    (List.map
+                        (\p -> phoneCopy p)
+                        rendered
+                    )
+
+            Err _ ->
+                Element.text ""
+        , viewPhoneWebsiteButton "Go to the Sashin Exists Website" "https://sashinexists.com" (icon globe 25)
         ]
 
 
 viewPhoneBlogPosts : List Blog -> Element msg
 viewPhoneBlogPosts posts =
-    Element.text "blog"
+    Element.column [ width fill, spacing 30 ]
+        (List.map viewPhoneBlogPost posts)
+
+
+viewPhoneBlogPost : Blog -> Element msg
+viewPhoneBlogPost post =
+    Element.row
+        [ spacing 50, Background.color theme.contentBgColor, padding 40, width fill, Font.alignLeft, Font.size 16 ]
+        [ Element.column
+            [ width fill, spacing 30 ]
+            [ viewPhoneBlogPostHeader post
+            , Element.row
+                [ width fill ]
+                [ Element.column
+                    [ width fill, spacing 40 ]
+                    (case markdownView post.content of
+                        Ok rendered ->
+                            List.map
+                                (\p -> Element.paragraph ([ Font.justify, width fill, Font.size theme.textSizes.phone.copy, Font.light ] ++ defaultParagraphStyles) [ p ])
+                                rendered
+
+                        Err _ ->
+                            [ Element.text "failed to render markdown" ]
+                    )
+                ]
+            ]
+        ]
+
+
+viewPhoneBlogPostHeader : Blog -> Element msg
+viewPhoneBlogPostHeader post =
+    Element.column
+        [ width fill, spacing 20, Font.center ]
+        [ viewPhoneBlogPostTitle post.title post.slug
+        , viewPhoneBlogPostDate post.createdAt
+        , viewPhoneBlogPostTags post.tags
+        ]
+
+
+viewPhoneBlogPostTitle : String -> String -> Element msg
+viewPhoneBlogPostTitle title slug =
+    Element.link
+        [ Font.color theme.fontLinkColor, mouseOver [ Font.color theme.fontLinkHoverColor ], Font.center ]
+        { label = phonePageHeading title
+        , url = "/blog/" ++ slug
+        }
+
+
+viewPhoneBlogPostDate : String -> Element msg
+viewPhoneBlogPostDate date =
+    Element.paragraph
+        [ Font.size 10, Font.center ]
+        [ Element.text
+            (case toTime date of
+                Ok formattedDate ->
+                    formatPosixDate formattedDate
+
+                Err _ ->
+                    "bad date"
+            )
+        ]
+
+
+viewPhoneBlogPostTags : List String -> Element msg
+viewPhoneBlogPostTags tags =
+    Element.row
+        [ spacing 10 ]
+        (List.map viewPhoneBlogPostTag tags)
+
+
+viewPhoneBlogPostTag : String -> Element msg
+viewPhoneBlogPostTag tag =
+    Element.link
+        [ mouseOver [ Background.color theme.componentHoverColor ], padding 10, rounded 5, Background.color theme.contentBgColorLighter ]
+        { label = Element.paragraph [ Font.size 10 ] [ Element.text (slugToTitle tag) ]
+        , url = "/tag/" ++ tag
+        }
